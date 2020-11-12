@@ -14,5 +14,17 @@ namespace MovieStore.Models
         }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Movie> Movies{ get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Actor> Actor { get; set; }
+        public DbSet<Transaction> Transactions{ get; set; }
+        public DbSet<Rental> Rentals{ get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<Actor> Actors { get; set; }
+        //public DbSet<MOVIE_has_ACTOR> MOVIE_Has_ACTORS { get; set; }
+        //public DbSet<Review> Reviews { get; set; }
+        //public DbSet<Review> Reviews { get; set; }
+        //public DbSet<Review> Reviews { get; set; }
+        //public DbSet<Review> Reviews { get; set; }
+
     }
 }
