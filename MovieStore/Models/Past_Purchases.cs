@@ -11,7 +11,7 @@ namespace MovieStore.Models
         [Key]
         public Transaction Transaction{get; set;}
         [Key]
-        public Customer Customer { get; set; }
+        public User Customer { get; set; }
         [Key]
         public Movie Movie { get; set; }
     }

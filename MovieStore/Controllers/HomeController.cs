@@ -13,7 +13,7 @@ namespace MovieStore.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IActorRepository _actorList;
-        private readonly ICustomerRepository _customerList;
+        private readonly IUserRepository _customerList;
         private readonly IMovieRepository _movieList;
         private readonly IPast_PurchasesRepository _past_purchaseList;
         private readonly IPurchaseRepository _purchaseList;
@@ -24,7 +24,7 @@ namespace MovieStore.Controllers
 
         public HomeController(ILogger<HomeController> logger,
                            IActorRepository actor,
-                           ICustomerRepository customer,
+                           IUserRepository customer,
                            IMovieRepository movie,
                            IPast_PurchasesRepository past_purchase,
                            IPurchaseRepository purchase,
@@ -54,10 +54,15 @@ namespace MovieStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCustomer(Customer CustomerIn)
+        public IActionResult AddCustomer(User CustomerIn)
         {
             _customerList.Add(CustomerIn);
-            return RedirectToAction("Index");
+            return RedirectToAction("CustomerList");
+        }
+
+        public IActionResult CustomerList()
+        {
+            return View(_customerList.GetAllCustomers().AsEnumerable());
         }
 
         public IActionResult Privacy()

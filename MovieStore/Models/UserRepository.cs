@@ -6,41 +6,42 @@ using MovieStore.Models;
 
 namespace MovieStore.Models
 {
-    public class CustomerRepository : ICustomerRepository
+    public class UserRepository : IUserRepository
     {
 
         private readonly AppDbContext _context;
 
-        public CustomerRepository(AppDbContext context)
+        public UserRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public Customer Add(Customer customerIn)
+        public User Add(User customerIn)
         {
-            _context.Customers.Add(customerIn);
+            _context.Users.Add(customerIn);
             _context.SaveChanges();
             return customerIn;
         }
 
-        public Customer Delete(int id)
+        public User Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Customer> GetAllCustomers()
+        public IEnumerable<User> GetAllCustomers()
+        {
+            return _context.Users;
+        }
+
+        public User GetCustomer(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Customer GetCustomer(int id)
+        public User GetCustomerByUserName(string usernameIn)
         {
             throw new NotImplementedException();
         }
 
-        public Customer GetCustomerByUserName(string usernameIn)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

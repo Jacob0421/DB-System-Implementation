@@ -11,6 +11,7 @@ namespace MovieStore.Models
     {
         [Key]
         public int MovieNum { get; set; }
+
         public string MovieTitle { get; set; }
         public int DirectorNum { get; set; }
         public string MovieRating { get; set; }

@@ -32,7 +32,7 @@ namespace MovieStore
 
 
             services.AddScoped<IActorRepository, ActorRepository>();
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IPast_PurchasesRepository, Past_PurchasesRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
