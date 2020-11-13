@@ -57,6 +57,7 @@ namespace MovieStore.Controllers
         public IActionResult AddCustomer(Customer CustomerIn)
         {
             _customerList.Add(CustomerIn);
+            string helloo = "";
             return RedirectToAction("Index");
         }
 
