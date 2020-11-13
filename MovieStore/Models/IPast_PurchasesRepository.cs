@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MovieStore.Models
 {
-    interface IPast_PurchasesRepository
+    public interface IPast_PurchasesRepository
     {
     }
 }

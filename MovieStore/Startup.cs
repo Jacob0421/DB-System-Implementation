@@ -29,6 +29,16 @@ namespace MovieStore
             services.AddMvc();
             services.AddDbContextPool<AppDbContext>(options =>
                options.UseSqlServer(_config.GetConnectionString("DBConnection")));
+
+
+            services.AddScoped<IActorRepository, ActorRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IPast_PurchasesRepository, Past_PurchasesRepository>();
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<IRentalRepository, RentalRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

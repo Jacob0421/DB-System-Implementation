@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MovieStore.Models
 {
-    interface ITransactionRepository
+    public interface ITransactionRepository
     {
     }
 }

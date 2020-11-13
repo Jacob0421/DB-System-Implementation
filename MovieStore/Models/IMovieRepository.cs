@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MovieStore.Models
 {
-    interface IMovieRepository
+    public interface IMovieRepository
     {
         Movie Add(Movie movieIn);
         Movie Update(Movie movieChanges);
