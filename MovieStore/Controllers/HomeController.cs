@@ -20,6 +20,9 @@ namespace MovieStore.Controllers
         private readonly IRentalRepository _rentalList;
         private readonly IReviewRepository _reviewList;
         private readonly ITransactionRepository _transactionList;
+        private readonly IAge_RatingRepository _age_RatingList;
+        private readonly IDirectorRepository _directorList;
+        private readonly IGenreRepository _genreList;
         
 
         public HomeController(ILogger<HomeController> logger,
@@ -30,7 +33,10 @@ namespace MovieStore.Controllers
                            IPurchaseRepository purchase,
                            IRentalRepository rental,
                            IReviewRepository review,
-                           ITransactionRepository transaction
+                           ITransactionRepository transaction,
+                           IAge_RatingRepository age_rating,
+                           IDirectorRepository director,
+                           IGenreRepository genre
                            )
         {
             _logger = logger;
@@ -42,6 +48,10 @@ namespace MovieStore.Controllers
             _rentalList = rental;
             _reviewList = review;
             _transactionList = transaction;
+            _age_RatingList = age_rating;
+            _directorList = director;
+            _genreList = genre;
+
         }
 
         public IActionResult Index()
@@ -68,6 +78,40 @@ namespace MovieStore.Controllers
         public IActionResult AdminHomepage()
         {
             return View(_movieList.GetAllMovies());
+        }
+
+        public IActionResult AddMovie()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddMovie(Movie movieIn, string DirectorFName, string DirectorLName, string Genre, string AgeRating)
+        {
+            Genre matchedGenre = _genreList.GetGenreByName(Genre);
+
+            if (matchedGenre != null)
+                movieIn.Genre = matchedGenre;
+            else
+                movieIn.Genre = _genreList.AddGenre(Genre);
+
+            Age_Rating matchedAge_Rating = _age_RatingList.GetAge_RatingByName(AgeRating);
+
+            if (matchedAge_Rating != null)
+                movieIn.AgeRating = matchedAge_Rating;
+            else
+                ViewBag.Result = "There was an error Selecting age rating please Try Again.";
+
+            Director matchedDirector = _directorList.GetDirectorByName(DirectorFName, DirectorLName);
+
+            if (matchedDirector != null)
+                movieIn.Director = matchedDirector;
+            else
+                movieIn.Director = _directorList.AddDirector(DirectorFName,DirectorLName);
+
+            _movieList.Add(movieIn);
+
+            return RedirectToAction("AdminHomepage");
         }
 
         public IActionResult Privacy()

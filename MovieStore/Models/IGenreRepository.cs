@@ -7,5 +7,7 @@ namespace MovieStore.Models
 {
     public interface IGenreRepository
     {
+        public Genre GetGenreByName(string nameIn);
+        public Genre AddGenre(string GenreIn);
     }
 }

@@ -17,7 +17,9 @@ namespace MovieStore.Models
 
         public Movie Add(Movie movieIn)
         {
-            throw new NotImplementedException();
+            if (movieIn != null)
+                _context.Add(movieIn);
+            return movieIn;
         }
 
         public Movie Delete(int id)

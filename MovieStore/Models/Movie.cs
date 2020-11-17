@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,6 +15,7 @@ namespace MovieStore.Models
 
         public string MovieTitle { get; set; }
         public Director Director{ get; set; }
+        [HiddenInput]
         public int MovieRating { get; set; }
         public string MovieReleaseDate{ get; set; }
         public Genre Genre { get; set; }
