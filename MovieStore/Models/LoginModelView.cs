@@ -8,8 +8,8 @@ namespace MovieStore.Models
 {
     public class LoginModelView
     {
-        public string UserUserName { get; set; }
-        public string UserPassword { get; set; }
+        public string UserUserName { get; }
+        public string UserPassword { get; }
         public string ReturnUrl { get; set; } = "/";
     }
 }
