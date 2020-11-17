@@ -20,29 +20,49 @@
                 @Html.DisplayNameFor(model => model.MovieRating)
             </th>
             <th>
+                director Name
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.MovieReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre.GenreName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AgeRating.AgeRating)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieRating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieReleaseDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Director.FName)
+                    @Html.DisplayFor(modelItem => item.Director.LName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre.GenreName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

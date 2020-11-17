@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +31,8 @@ namespace MovieStore.Models
 
         public IEnumerable<Movie> GetAllMovies()
         {
-            return _context.Movies.AsEnumerable();
+            return _context.Movies.Include(m => m.Director).Include(m => m.Genre).Include(m => m.AgeRating).AsEnumerable();
+
         }
 
         public Movie GetMovie(int id)
