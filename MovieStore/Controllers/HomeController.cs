@@ -65,6 +65,11 @@ namespace MovieStore.Controllers
             return View(_customerList.GetAllCustomers().AsEnumerable());
         }
 
+        public IActionResult AdminHomepage()
+        {
+            return View(_movieList.GetAllMovies());
+        }
+
         public IActionResult Privacy()
         {
             return View();

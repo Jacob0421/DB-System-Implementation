@@ -14,7 +14,7 @@ namespace MovieStore.Models
             _context = context;
         }
 
-        public Past_Purchases GetGenres(Past_Purchases past_PurchaseIn)
+        public Past_Purchases GetUserTransactions(Past_Purchases past_PurchaseIn)
         {
             IEnumerable<Transaction> userTransactions = _context.Transactions.Where(t => t.Customer == past_PurchaseIn.Customer);
 

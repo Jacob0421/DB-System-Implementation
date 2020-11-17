@@ -13,10 +13,10 @@ namespace MovieStore.Models
         public int MovieNum { get; set; }
 
         public string MovieTitle { get; set; }
-        public int DirectorNum { get; set; }
-        public string MovieRating { get; set; }
+        public Director Director{ get; set; }
+        public int MovieRating { get; set; }
         public string MovieReleaseDate{ get; set; }
-        public string Genre { get; set; }
-        public string AgeRating { get; set; }
+        public Genre Genre { get; set; }
+        public Age_Rating AgeRating { get; set; }
     }
 }

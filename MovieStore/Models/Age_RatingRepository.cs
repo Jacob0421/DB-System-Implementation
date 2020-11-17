@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace MovieStore.Models
 {
-    public interface IPast_PurchasesRepository
+    public class Age_RatingRepository : IAge_RatingRepository
     {
-        Past_Purchases GetUserTransactions(Past_Purchases past_PurchaseIn);
     }
 }
