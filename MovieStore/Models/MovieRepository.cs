@@ -18,7 +18,8 @@ namespace MovieStore.Models
         public Movie Add(Movie movieIn)
         {
             if (movieIn != null)
-                _context.Add(movieIn);
+            _context.Add(movieIn);
+            _context.SaveChanges();
             return movieIn;
         }
 
@@ -29,7 +30,7 @@ namespace MovieStore.Models
 
         public IEnumerable<Movie> GetAllMovies()
         {
-            throw new NotImplementedException();
+            return _context.Movies.AsEnumerable();
         }
 
         public Movie GetMovie(int id)

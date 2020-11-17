@@ -22,6 +22,7 @@ namespace MovieStore.Models
                 GenreName = GenreIn,
             };
             _context.Genre.Add(newGenre);
+            _context.SaveChanges();
             return newGenre;
         }
 

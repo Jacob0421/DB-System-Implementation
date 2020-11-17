@@ -22,6 +22,7 @@ namespace MovieStore.Models
                 LName = lNameIn
             };
             _context.Directors.Add(newDirector);
+            _context.SaveChanges();
             return newDirector;
         }
 
