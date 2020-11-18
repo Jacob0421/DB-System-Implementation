@@ -43,5 +43,9 @@ namespace MovieStore.Models
             return _context.Users.FirstOrDefault(u => u.UserUserName == customerIn);
         }
 
+        public User GetRoleByUsername(string customerIn)
+        {
+            return _context.Users.FirstOrDefault(n => n.role == "admin");
+        }
     }
 }

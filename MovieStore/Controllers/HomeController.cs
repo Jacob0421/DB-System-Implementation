@@ -137,7 +137,11 @@ namespace MovieStore.Controllers
             if (foundUser != null)
             {
 
-                if (foundUser.Equals(customerIn))
+                if (foundUser.Equals(customerIn) && foundUser.role.Equals("admin"))
+                {
+                    return View("AdminHomepage");
+                }
+                else if (foundUser.Equals(customerIn) && foundUser.role != "admin")
                 {
                     return View("Index");
                 }
@@ -146,7 +150,7 @@ namespace MovieStore.Controllers
             }
             else
                 ViewBag.Result = "Invalid Username.";
-            return View("Index");
+            return View();
         }
     }
 }

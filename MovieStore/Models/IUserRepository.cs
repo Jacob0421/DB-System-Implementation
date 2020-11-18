@@ -12,5 +12,6 @@ namespace MovieStore.Models
         User Delete(int id);
         IEnumerable<User> GetAllCustomers();
         User GetUserByUsername(string customerIn);
+        User GetRoleByUsername(string customerIn);
     }
 }
