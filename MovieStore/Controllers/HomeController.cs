@@ -127,7 +127,7 @@ namespace MovieStore.Controllers
 
         public IActionResult Login()
         {
-            return View("Login");
+            return View();
         }
 
         [HttpPost]

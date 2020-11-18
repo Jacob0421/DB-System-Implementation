@@ -37,6 +37,13 @@
                 <input asp-for="UserLastName" class="form-control" />
                 <span asp-validation-for="UserLastName" class="text-danger"></span>
             </div>
+            <div>
+                <label asp-for="role" class="control-label">User Role</label>
+                <select name="role">
+                    <option value="admin">Admin</option>
+                    <option value="user">Customer</option>
+                </select>
+            </div>
             @*<div class="form-group">
                 <label asp-for="AmountOwed" class="control-label"></label>
                 <input asp-for="AmountOwed" class="form-control" />
