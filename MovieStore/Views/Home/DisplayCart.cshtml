@@ -1,0 +1,55 @@
+﻿@model IEnumerable<MovieStore.Models.Cart>
+
+@{
+    ViewData["Title"] = "DisplayCart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>DisplayCart</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<p class="text-danger">@ViewBag.Result</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie.MovieTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie.MovieRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie.MovieReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRental)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsRental)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CartId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CartId">Details</a> |
+                <a asp-action="RemoveFromCart" asp-route-cartId="@item.CartId">Remove</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

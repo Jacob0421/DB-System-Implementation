@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MovieStore.Models;
@@ -23,6 +24,7 @@ namespace MovieStore.Controllers
         private readonly IAge_RatingRepository _age_RatingList;
         private readonly IDirectorRepository _directorList;
         private readonly IGenreRepository _genreList;
+        private readonly ICartRepository _cartList;
         
 
         public HomeController(ILogger<HomeController> logger,
@@ -36,7 +38,8 @@ namespace MovieStore.Controllers
                            ITransactionRepository transaction,
                            IAge_RatingRepository age_rating,
                            IDirectorRepository director,
-                           IGenreRepository genre
+                           IGenreRepository genre,
+                           ICartRepository cart
                            )
         {
             _logger = logger;
@@ -51,6 +54,7 @@ namespace MovieStore.Controllers
             _age_RatingList = age_rating;
             _directorList = director;
             _genreList = genre;
+            _cartList = cart;
 
         }
 
@@ -146,6 +150,56 @@ namespace MovieStore.Controllers
             return RedirectToAction("AdminHomepage");
         }
 
+        public IActionResult CustomerHomepage()
+        {
+            return View(_movieList.GetAllMovies());
+        }
+
+        [HttpGet]
+        public IActionResult AddRental(int movieId)
+        {
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+             Movie movieIn = _movieList.GetMovie(movieId);
+            _cartList.AddToCart(movieIn, currentUser, true);
+
+            ViewBag.Result = "Rental Successfully Added";
+            return RedirectToAction("CustomerHomepage");
+        }
+
+        [HttpGet]
+        public IActionResult AddPurchase(int movieId)
+        {
+             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+             Movie movieIn = _movieList.GetMovie(movieId);
+            _cartList.AddToCart(movieIn, currentUser, false);
+
+            ViewBag.Result = "Purchase Successfully Added";
+            return RedirectToAction("CustomerHomepage");
+        }
+
+        public IActionResult DisplayCart()
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+            if (foundUser != null)
+            {
+                return View(_cartList.GetCartItemsByUser(foundUser));
+            }
+            else
+                return RedirectToAction("CustomerHomepage");
+        }
+
+        [HttpGet]
+        public IActionResult RemoveFromCart(int cartId)
+        {
+            Cart foundCartItem = _cartList.GetCartItemById(cartId);
+
+            _cartList.RemoveFromCart(foundCartItem);
+            return RedirectToAction("DisplayCart");
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -175,7 +229,8 @@ namespace MovieStore.Controllers
                 }
                 else if (foundUser.UserUserName.Equals(username) && foundUser.role != "admin")
                 {
-                    return RedirectToAction("UserHome");
+                    HttpContext.Session.SetString("Username", username);
+                    return RedirectToAction("CustomerHomepage");
                 }
                 else
                     ViewBag.Result = "Something Went Wrong...";

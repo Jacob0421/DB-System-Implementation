@@ -37,7 +37,7 @@ namespace MovieStore.Models
 
         public Movie GetMovie(int id)
         {
-            throw new NotImplementedException();
+            return _context.Movies.FirstOrDefault(m => m.MovieNum == id);
         }
 
         public Movie Update(Movie movieChanges)
