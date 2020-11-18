@@ -131,17 +131,17 @@ namespace MovieStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string customerIn, string password)
+        public IActionResult Login(string username, string password)
         {
-            User foundUser = _customerList.GetUserByUsername(customerIn);
-            if (foundUser != null)
+            User foundUser = _customerList.GetUserByUsername(username);
+            if (foundUser != null && foundUser.role != null)
             {
 
-                if (foundUser.Equals(customerIn) && foundUser.role.Equals("admin"))
+                if (foundUser.UserUserName.Equals(username) && foundUser.role.Equals("admin"))
                 {
-                    return View("AdminHomepage");
+                    return RedirectToAction("AdminHomepage");
                 }
-                else if (foundUser.Equals(customerIn) && foundUser.role != "admin")
+                else if (foundUser.UserUserName.Equals(username) && foundUser.role != "admin")
                 {
                     return View("Index");
                 }
