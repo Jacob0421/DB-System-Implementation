@@ -7,62 +7,93 @@
 
 <h1>AdminHomepage</h1>
 
-<p>
-    <a asp-action="AddMovie">Add New Movie</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieRating)
-            </th>
-            <th>
-                director Name
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieReleaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre.GenreName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AgeRating.AgeRating)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div>
+    <div class="text-center">
+        <h1>Hello Admin!</h1>
+        <p>What would you like to do?</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/AdminHomepage">Admin Home</a></h3>
+        <p>Go to the Admin Homepage.</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/UserList">User List</a></h3>
+        <p>View the list of Users in the database.</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/AdminHomepage">Movie List</a></h3>
+        <p>View the list of Movies within the database. (At the bottom of this page.)</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/AddMovie">Update Inventory</a></h3>
+        <p>Add a movie to the database.</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/UserList">User List</a></h3>
+        <p>View the list of Users in the database.</p>
+    </div>
+    <div class="flex-grow-0">
+        <h3><a href="~/Home/Reports">Generate Reports</a></h3>
+        <p>Generate reports from data in the database.</p>
+    </div>
+</div>
+
+    <p>
+        <a asp-action="AddMovie">Add New Movie</a>
+    </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MovieTitle)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MovieRating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Director.FName)
-                    @Html.DisplayFor(modelItem => item.Director.LName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MovieReleaseDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genre.GenreName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieTitle)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieRating)
+                </th>
+                <th>
+                    director Name
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MovieReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genre.GenreName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AgeRating.AgeRating)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MovieTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MovieRating)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Director.FName)
+                        @Html.DisplayFor(modelItem => item.Director.LName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Genre.GenreName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

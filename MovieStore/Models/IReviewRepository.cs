@@ -8,6 +8,6 @@ namespace MovieStore.Models
     public interface IReviewRepository
     {
         public Review Add(Review newReview);
-
+        IEnumerable<Review> GetAllReviews();
     }
 }

@@ -17,5 +17,10 @@ namespace MovieStore.Models
             _context.SaveChanges();
             return ReviewIn;
         }
+
+        public IEnumerable<Review> GetAllReviews()
+        {
+            return _context.Reviews;
+        }
     }
 }

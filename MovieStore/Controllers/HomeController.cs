@@ -58,6 +58,16 @@ namespace MovieStore.Controllers
         {
             return View();
         }
+
+        public IActionResult UserHome()
+        {
+            return View();
+        }
+
+        public IActionResult CheckBalance()
+        {
+            return View();
+        }
         public IActionResult AddCustomer()
         {
             return View();
@@ -70,12 +80,34 @@ namespace MovieStore.Controllers
             return RedirectToAction("CustomerList");
         }
 
-        public IActionResult CustomerList()
+        public IActionResult UserList()
         {
             return View(_customerList.GetAllCustomers().AsEnumerable());
         }
 
+        public IActionResult ReviewList()
+        {
+            return View(_reviewList.GetAllReviews().AsEnumerable());
+        }
+
+        public IActionResult AddReview()
+        {
+            return View();
+        }
+        
+        [HttpPost]
+        public IActionResult AddReview(Review ReviewIn)
+        {
+            _reviewList.Add(ReviewIn);
+            return RedirectToAction("ReviewList");
+        }
+
         public IActionResult AdminHomepage()
+        {
+            return View(_movieList.GetAllMovies());
+        }
+
+        public IActionResult MovieList()
         {
             return View(_movieList.GetAllMovies());
         }
@@ -143,7 +175,7 @@ namespace MovieStore.Controllers
                 }
                 else if (foundUser.UserUserName.Equals(username) && foundUser.role != "admin")
                 {
-                    return View("Index");
+                    return RedirectToAction("UserHome");
                 }
                 else
                     ViewBag.Result = "Something Went Wrong...";
