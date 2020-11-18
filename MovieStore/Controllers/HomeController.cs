@@ -124,5 +124,29 @@ namespace MovieStore.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult Login()
+        {
+            return View("Login");
+        }
+
+        [HttpPost]
+        public IActionResult Login(string customerIn, string password)
+        {
+            User foundUser = _customerList.GetUserByUsername(customerIn);
+            if (foundUser != null)
+            {
+
+                if (foundUser.Equals(customerIn))
+                {
+                    return View("Index");
+                }
+                else
+                    ViewBag.Result = "Something Went Wrong...";
+            }
+            else
+                ViewBag.Result = "Invalid Username.";
+            return View("Index");
+        }
     }
 }

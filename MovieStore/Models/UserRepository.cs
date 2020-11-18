@@ -38,9 +38,9 @@ namespace MovieStore.Models
             throw new NotImplementedException();
         }
 
-        public User GetCustomerByUserName(string usernameIn)
+        public User GetUserByUsername(string customerIn)
         {
-            throw new NotImplementedException();
+            return _context.Users.FirstOrDefault(u => u.UserUserName == customerIn);
         }
 
     }
