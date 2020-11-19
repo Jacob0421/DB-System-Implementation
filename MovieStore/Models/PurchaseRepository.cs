@@ -14,5 +14,16 @@ namespace MovieStore.Models
         {
             _context = context;
         }
+
+        public Purchase AddPurchase(Transaction transactionIn)
+        {
+            Purchase newPurchase = new Purchase()
+            {
+                PurchaseTransaction = transactionIn
+            };
+
+            _context.Purchases.Add(newPurchase);
+            return newPurchase;
+        }
     }
 }

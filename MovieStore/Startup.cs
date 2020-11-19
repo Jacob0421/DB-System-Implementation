@@ -43,6 +43,7 @@ namespace MovieStore
             services.AddScoped<IAge_RatingRepository, Age_RatingRepository>();
             services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ITransactionDetailsRepository, TransactionDetailsRepository>();
 
             services.AddSession(options =>
             {

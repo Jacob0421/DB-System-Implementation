@@ -12,5 +12,19 @@ namespace MovieStore.Models
         {
             _context = context;
         }
+
+        public Transaction CreateTransaction(Movie movieIn, User userIn, bool IsRental)
+        {
+            Transaction newTransaction = new Transaction()
+            {
+                TransactionDate = DateTime.Today.ToString(),
+                TransactionMovie = movieIn,
+                Customer = userIn,
+                IsRental = IsRental
+            };
+            _context.Transactions.Add(newTransaction);
+            _context.SaveChangesAsync();
+            return newTransaction;
+        }
     }
 }

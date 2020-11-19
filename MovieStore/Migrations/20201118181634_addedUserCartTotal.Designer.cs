@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieStore.Models;
 
 namespace MovieStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201118181634_addedUserCartTotal")]
+    partial class addedUserCartTotal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,12 +151,15 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("PurchaseTransactionTransactionNum")
+                    b.Property<decimal>("PurchasePrice")
+                        .HasColumnType("decimal(15,2)");
+
+                    b.Property<int?>("TransactionNum")
                         .HasColumnType("int");
 
                     b.HasKey("PurchaseId");
 
-                    b.HasIndex("PurchaseTransactionTransactionNum");
+                    b.HasIndex("TransactionNum");
 
                     b.ToTable("Purchases");
                 });
@@ -172,12 +177,15 @@ namespace MovieStore.Migrations
                     b.Property<bool>("IsLate")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("RentalTransactionTransactionNum")
+                    b.Property<decimal>("RentalPrice")
+                        .HasColumnType("decimal(15,2)");
+
+                    b.Property<int?>("TransactionNum")
                         .HasColumnType("int");
 
                     b.HasKey("RentalId");
 
-                    b.HasIndex("RentalTransactionTransactionNum");
+                    b.HasIndex("TransactionNum");
 
                     b.ToTable("Rentals");
                 });
@@ -230,76 +238,19 @@ namespace MovieStore.Migrations
                     b.Property<bool>("IsRental")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("MovieNum")
+                        .HasColumnType("int");
+
                     b.Property<string>("TransactionDate")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TransactionMovieMovieNum")
-                        .HasColumnType("int");
 
                     b.HasKey("TransactionNum");
 
                     b.HasIndex("CustomerUserNum");
 
-                    b.HasIndex("TransactionMovieMovieNum");
+                    b.HasIndex("MovieNum");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("MovieStore.Models.TransactionDetails", b =>
-                {
-                    b.Property<int>("TransactionDetailsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CVV")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreditCardNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExpirationDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MainTransactionTransactionNum")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NameOnCard")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TransactionDetailsId");
-
-                    b.HasIndex("MainTransactionTransactionNum");
-
-                    b.ToTable("TransactionDetails");
                 });
 
             modelBuilder.Entity("MovieStore.Models.User", b =>
@@ -372,16 +323,16 @@ namespace MovieStore.Migrations
 
             modelBuilder.Entity("MovieStore.Models.Purchase", b =>
                 {
-                    b.HasOne("MovieStore.Models.Transaction", "PurchaseTransaction")
+                    b.HasOne("MovieStore.Models.Transaction", "Transaction")
                         .WithMany()
-                        .HasForeignKey("PurchaseTransactionTransactionNum");
+                        .HasForeignKey("TransactionNum");
                 });
 
             modelBuilder.Entity("MovieStore.Models.Rental", b =>
                 {
-                    b.HasOne("MovieStore.Models.Transaction", "RentalTransaction")
+                    b.HasOne("MovieStore.Models.Transaction", "Transaction")
                         .WithMany()
-                        .HasForeignKey("RentalTransactionTransactionNum");
+                        .HasForeignKey("TransactionNum");
                 });
 
             modelBuilder.Entity("MovieStore.Models.Review", b =>
@@ -397,16 +348,9 @@ namespace MovieStore.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerUserNum");
 
-                    b.HasOne("MovieStore.Models.Movie", "TransactionMovie")
+                    b.HasOne("MovieStore.Models.Movie", "Movie")
                         .WithMany()
-                        .HasForeignKey("TransactionMovieMovieNum");
-                });
-
-            modelBuilder.Entity("MovieStore.Models.TransactionDetails", b =>
-                {
-                    b.HasOne("MovieStore.Models.Transaction", "MainTransaction")
-                        .WithMany()
-                        .HasForeignKey("MainTransactionTransactionNum");
+                        .HasForeignKey("MovieNum");
                 });
 #pragma warning restore 612, 618
         }

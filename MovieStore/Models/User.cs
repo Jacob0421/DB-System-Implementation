@@ -21,5 +21,6 @@ namespace MovieStore.Models
         public double AmountPaid { get; set; }
         public int RecommendedBy { get; set; }
         public string role { get; set; }
+        public decimal UserCartTotal { get; set; }
     }
 }

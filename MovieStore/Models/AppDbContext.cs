@@ -26,6 +26,7 @@ namespace MovieStore.Models
         public DbSet<Age_Rating> Age_Ratings { get; set; }
         //public DbSet<Review> Reviews { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<TransactionDetails> TransactionDetails{ get; set; }
 
     }
 }

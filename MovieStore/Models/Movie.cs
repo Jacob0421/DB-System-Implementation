@@ -20,5 +20,7 @@ namespace MovieStore.Models
         public string MovieReleaseDate{ get; set; }
         public Genre Genre { get; set; }
         public Age_Rating AgeRating { get; set; }
+        public decimal RentalPrice { get; set; }
+        public decimal PurchasePrice { get; set; }
     }
 }

@@ -7,5 +7,6 @@ namespace MovieStore.Models
 {
     public interface ITransactionRepository
     {
+        Transaction CreateTransaction(Movie movieIn, User userIn, bool IsRental);
     }
 }

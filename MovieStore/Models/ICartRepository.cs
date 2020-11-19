@@ -11,5 +11,7 @@ namespace MovieStore.Models
         IEnumerable<Cart> GetCartItemsByUser(User userIn);
         Cart RemoveFromCart(Cart cartItemIn);
         Cart GetCartItemById(int cartIdIn);
+        decimal getMoviePrice(Movie movieIn, bool isRental);
+
     }
 }

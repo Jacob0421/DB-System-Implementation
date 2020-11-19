@@ -12,7 +12,7 @@ namespace MovieStore.Models
         public int TransactionNum { get; set; }
         public string TransactionDate { get; set; }
         public User Customer { get; set; }
-        public Movie Movie { get; set; }
+        public Movie TransactionMovie { get; set; }
         public bool IsRental { get; set; }
     }
 }

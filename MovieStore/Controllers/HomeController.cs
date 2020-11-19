@@ -25,7 +25,9 @@ namespace MovieStore.Controllers
         private readonly IDirectorRepository _directorList;
         private readonly IGenreRepository _genreList;
         private readonly ICartRepository _cartList;
-        
+        private readonly ITransactionDetailsRepository _transactionDetailsList;
+        private readonly AppDbContext _context;
+
 
         public HomeController(ILogger<HomeController> logger,
                            IActorRepository actor,
@@ -39,7 +41,9 @@ namespace MovieStore.Controllers
                            IAge_RatingRepository age_rating,
                            IDirectorRepository director,
                            IGenreRepository genre,
-                           ICartRepository cart
+                           ICartRepository cart,
+                           ITransactionDetailsRepository transactionDetails,
+                           AppDbContext context
                            )
         {
             _logger = logger;
@@ -55,7 +59,8 @@ namespace MovieStore.Controllers
             _directorList = director;
             _genreList = genre;
             _cartList = cart;
-
+            _transactionDetailsList = transactionDetails;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -98,7 +103,7 @@ namespace MovieStore.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         public IActionResult AddReview(Review ReviewIn)
         {
@@ -167,7 +172,7 @@ namespace MovieStore.Controllers
             if (matchedDirector != null)
                 movieIn.Director = matchedDirector;
             else
-                movieIn.Director = _directorList.AddDirector(DirectorFName,DirectorLName);
+                movieIn.Director = _directorList.AddDirector(DirectorFName, DirectorLName);
 
             _movieList.Add(movieIn);
 
@@ -184,7 +189,7 @@ namespace MovieStore.Controllers
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-             Movie movieIn = _movieList.GetMovie(movieId);
+            Movie movieIn = _movieList.GetMovie(movieId);
             _cartList.AddToCart(movieIn, currentUser, true);
 
             ViewBag.Result = "Rental Successfully Added";
@@ -194,9 +199,9 @@ namespace MovieStore.Controllers
         [HttpGet]
         public IActionResult AddPurchase(int movieId)
         {
-             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-             Movie movieIn = _movieList.GetMovie(movieId);
+            Movie movieIn = _movieList.GetMovie(movieId);
             _cartList.AddToCart(movieIn, currentUser, false);
 
             ViewBag.Result = "Purchase Successfully Added";
@@ -209,7 +214,17 @@ namespace MovieStore.Controllers
 
             if (foundUser != null)
             {
-                return View(_cartList.GetCartItemsByUser(foundUser));
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                decimal cartTotal = 0;
+                foreach (var cartItem in userCart)
+                {
+                    cartTotal += _cartList.getMoviePrice(cartItem.Movie, cartItem.IsRental);
+                }
+                foundUser.UserCartTotal = cartTotal;
+
+                ViewBag.Total = cartTotal.ToString();
+                ViewBag.UserNum = foundUser.UserNum;
+                return View(userCart);
             }
             else
                 return RedirectToAction("CustomerHomepage");
@@ -221,8 +236,98 @@ namespace MovieStore.Controllers
             Cart foundCartItem = _cartList.GetCartItemById(cartId);
 
             _cartList.RemoveFromCart(foundCartItem);
+            _context.SaveChanges();
             return RedirectToAction("DisplayCart");
         }
+
+        public IActionResult DisplayCheckout()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateTransaction(TransactionDetails inputDetails)
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+            IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+
+            foreach (var cartItem in userCart)
+            {
+                Transaction newTransaction = _transactionList.CreateTransaction(cartItem.Movie, foundUser, cartItem.IsRental);
+                _transactionDetailsList.AddTransactionDetails(inputDetails, newTransaction);
+
+                if (cartItem.IsRental)
+                {
+                    _rentalList.AddRental(newTransaction);
+                }
+                else
+                {
+                    _purchaseList.AddPurchase(newTransaction);
+
+                };
+            };
+            _context.SaveChanges();
+            return RedirectToAction("DisplayOrderConfirmation");
+        }
+
+        public IActionResult DisplayOrderConfirmation()
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+            if (foundUser != null)
+            {
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                decimal cartTotal = 0;
+                foreach (var cartItem in userCart)
+                {
+                    cartTotal += _cartList.getMoviePrice(cartItem.Movie, cartItem.IsRental);
+                }
+                foundUser.UserCartTotal = cartTotal;
+
+                ViewBag.Total = cartTotal.ToString();
+                return View(userCart);
+            }
+            else
+                return View("Login");
+        }
+
+        public IActionResult Orderconfirmed()
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+            if (foundUser != null)
+            {
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                foreach (var cartItem in userCart)
+                {
+                    _cartList.RemoveFromCart(cartItem);
+                }
+                _context.SaveChanges();
+
+                return RedirectToAction("CustomerHomepage");
+            }
+            return View("Index");
+        }
+
+        public IActionResult CancelledOrders()
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+
+            if (foundUser != null)
+            {
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+
+                foreach (var cartItem in userCart)
+                {
+                    _cartList.RemoveFromCart(cartItem);
+                }
+                _context.SaveChanges();
+
+                return RedirectToAction("CustomerHomepage");
+            }
+            return View("Index");
+        } 
 
         public IActionResult Privacy()
         {

@@ -37,7 +37,6 @@ namespace MovieStore.Models
         public Cart RemoveFromCart(Cart cartItemIn)
         {
             _context.Remove(cartItemIn);
-            _context.SaveChanges();
             return cartItemIn;
         }
 
@@ -45,5 +44,14 @@ namespace MovieStore.Models
         {
             return _context.Carts.FirstOrDefault(c => c.CartId == cartIdIn);
         }
+
+        public decimal getMoviePrice(Movie movieIn, bool isRental)
+        {
+            if (isRental)
+                return movieIn.RentalPrice;
+            else
+                return movieIn.PurchasePrice;
+        }
+
     }
 }

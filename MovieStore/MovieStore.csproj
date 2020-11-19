@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20201112160708_ChangedDBContext.cs" />
     <Compile Remove="Migrations\20201112160708_ChangedDBContext.Designer.cs" />
+    <Compile Remove="Migrations\20201118201137_addedTransactionDetails.cs" />
+    <Compile Remove="Migrations\20201118201137_addedTransactionDetails.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
