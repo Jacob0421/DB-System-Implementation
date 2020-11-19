@@ -40,6 +40,15 @@ namespace MovieStore.Models
             return _context.Movies.FirstOrDefault(m => m.MovieNum == id);
         }
 
+        public IEnumerable<Movie> SearchMovies(string keyIn)
+        {
+            IEnumerable<Movie> searchResults = _context.Movies.Include(m=>m.Director).Include(m => m.Genre).Where(o => o.MovieTitle.ToLower().Contains(keyIn.ToLower())
+                                           || o.Genre.GenreName.ToLower().Contains(keyIn.ToLower())
+                                           || o.Director.FName.ToLower().Contains(keyIn.ToLower())
+                                           || o.Director.LName.ToLower().Contains(keyIn.ToLower()));
+            return searchResults;
+        }
+
         public Movie Update(Movie movieChanges)
         {
             throw new NotImplementedException();

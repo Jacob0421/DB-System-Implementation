@@ -116,6 +116,30 @@ namespace MovieStore.Controllers
             return View(_movieList.GetAllMovies());
         }
 
+        public IActionResult MovieSearch()
+        {
+            return View();
+        }
+        
+        [HttpGet]
+        public IActionResult SearchMovie(string movieIn)
+        {
+            IEnumerable<Movie> results = _movieList.SearchMovies(movieIn);
+
+            if (results != null)
+            {
+                ViewData.Model = results;
+
+                return View("MovieSearchResults", results);
+            }
+            else
+            {
+                TempData["error"] = "Movie not Found: Please try again.";
+                ViewData.Model = _movieList.GetAllMovies();
+                return View("MovieSearch");
+            }
+        }
+
         public IActionResult AddMovie()
         {
             return View();

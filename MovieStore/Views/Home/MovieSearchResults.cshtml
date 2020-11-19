@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MovieStore.Models.Movie>
+
+@{
+    ViewData["Title"] = "MovieSearchResults";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>MovieSearchResults</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieReleaseDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
