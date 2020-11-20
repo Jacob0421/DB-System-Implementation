@@ -37,40 +37,67 @@ namespace MovieStore.Migrations
                     b.ToTable("Actor");
                 });
 
-            modelBuilder.Entity("MovieStore.Models.Customer", b =>
+            modelBuilder.Entity("MovieStore.Models.Age_Rating", b =>
                 {
-                    b.Property<int>("CustomerNum")
+                    b.Property<string>("AgeRating")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("AgeRating");
+
+                    b.ToTable("Age_Ratings");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.Cart", b =>
+                {
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("AmountOwed")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AmountPaid")
-                        .HasColumnType("float");
-
-                    b.Property<string>("CustomerDOB")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerFirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerLastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerPassword")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RecommendedBy")
+                    b.Property<int?>("CartOwnerUserNum")
                         .HasColumnType("int");
 
-                    b.HasKey("CustomerNum");
+                    b.Property<bool>("IsRental")
+                        .HasColumnType("bit");
 
-                    b.ToTable("Customers");
+                    b.Property<int?>("MovieNum")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("CartOwnerUserNum");
+
+                    b.HasIndex("MovieNum");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.Director", b =>
+                {
+                    b.Property<int>("DirectorNum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DirectorNum");
+
+                    b.ToTable("Directors");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.Genre", b =>
+                {
+                    b.Property<string>("GenreName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("GenreName");
+
+                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("MovieStore.Models.Movie", b =>
@@ -80,17 +107,17 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AgeRating")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("AgeRating1")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("DirectorNum")
+                    b.Property<int?>("DirectorNum")
                         .HasColumnType("int");
 
-                    b.Property<string>("Genre")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("GenreName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MovieRating")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MovieRating")
+                        .HasColumnType("int");
 
                     b.Property<string>("MovieReleaseDate")
                         .HasColumnType("nvarchar(max)");
@@ -98,7 +125,19 @@ namespace MovieStore.Migrations
                     b.Property<string>("MovieTitle")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("PurchasePrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("RentalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("MovieNum");
+
+                    b.HasIndex("AgeRating1");
+
+                    b.HasIndex("DirectorNum");
+
+                    b.HasIndex("GenreName");
 
                     b.ToTable("Movies");
                 });
@@ -110,15 +149,12 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("PurchasePrice")
-                        .HasColumnType("decimal(15,2)");
-
-                    b.Property<int?>("TransactionNum")
+                    b.Property<int?>("PurchaseTransactionTransactionNum")
                         .HasColumnType("int");
 
                     b.HasKey("PurchaseId");
 
-                    b.HasIndex("TransactionNum");
+                    b.HasIndex("PurchaseTransactionTransactionNum");
 
                     b.ToTable("Purchases");
                 });
@@ -136,15 +172,12 @@ namespace MovieStore.Migrations
                     b.Property<bool>("IsLate")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("RentalPrice")
-                        .HasColumnType("decimal(15,2)");
-
-                    b.Property<int?>("TransactionNum")
+                    b.Property<int?>("RentalTransactionTransactionNum")
                         .HasColumnType("int");
 
                     b.HasKey("RentalId");
 
-                    b.HasIndex("TransactionNum");
+                    b.HasIndex("RentalTransactionTransactionNum");
 
                     b.ToTable("Rentals");
                 });
@@ -191,39 +224,164 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CustomerNum")
+                    b.Property<int?>("CustomerUserNum")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsRental")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MovieNum")
-                        .HasColumnType("int");
-
-                    b.Property<string>("tTansactionDate")
+                    b.Property<string>("TransactionDate")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TransactionMovieMovieNum")
+                        .HasColumnType("int");
 
                     b.HasKey("TransactionNum");
 
-                    b.HasIndex("CustomerNum");
+                    b.HasIndex("CustomerUserNum");
 
-                    b.HasIndex("MovieNum");
+                    b.HasIndex("TransactionMovieMovieNum");
 
                     b.ToTable("Transactions");
                 });
 
+            modelBuilder.Entity("MovieStore.Models.TransactionDetails", b =>
+                {
+                    b.Property<int>("TransactionDetailsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CVV")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreditCardNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExpirationDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MainTransactionTransactionNum")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NameOnCard")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TransactionDetailsId");
+
+                    b.HasIndex("MainTransactionTransactionNum");
+
+                    b.ToTable("TransactionDetails");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.User", b =>
+                {
+                    b.Property<int>("UserNum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("AmountOwed")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AmountPaid")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RecommendedBy")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UserCartTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserDOB")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserFirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserLastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserNum");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.Cart", b =>
+                {
+                    b.HasOne("MovieStore.Models.User", "CartOwner")
+                        .WithMany()
+                        .HasForeignKey("CartOwnerUserNum");
+
+                    b.HasOne("MovieStore.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieNum");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.Movie", b =>
+                {
+                    b.HasOne("MovieStore.Models.Age_Rating", "AgeRating")
+                        .WithMany()
+                        .HasForeignKey("AgeRating1");
+
+                    b.HasOne("MovieStore.Models.Director", "Director")
+                        .WithMany()
+                        .HasForeignKey("DirectorNum");
+
+                    b.HasOne("MovieStore.Models.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreName");
+                });
+
             modelBuilder.Entity("MovieStore.Models.Purchase", b =>
                 {
-                    b.HasOne("MovieStore.Models.Transaction", "Transaction")
+                    b.HasOne("MovieStore.Models.Transaction", "PurchaseTransaction")
                         .WithMany()
-                        .HasForeignKey("TransactionNum");
+                        .HasForeignKey("PurchaseTransactionTransactionNum");
                 });
 
             modelBuilder.Entity("MovieStore.Models.Rental", b =>
                 {
-                    b.HasOne("MovieStore.Models.Transaction", "Transaction")
+                    b.HasOne("MovieStore.Models.Transaction", "RentalTransaction")
                         .WithMany()
-                        .HasForeignKey("TransactionNum");
+                        .HasForeignKey("RentalTransactionTransactionNum");
                 });
 
             modelBuilder.Entity("MovieStore.Models.Review", b =>
@@ -235,13 +393,20 @@ namespace MovieStore.Migrations
 
             modelBuilder.Entity("MovieStore.Models.Transaction", b =>
                 {
-                    b.HasOne("MovieStore.Models.Customer", "Customer")
+                    b.HasOne("MovieStore.Models.User", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerNum");
+                        .HasForeignKey("CustomerUserNum");
 
-                    b.HasOne("MovieStore.Models.Movie", "Movie")
+                    b.HasOne("MovieStore.Models.Movie", "TransactionMovie")
                         .WithMany()
-                        .HasForeignKey("MovieNum");
+                        .HasForeignKey("TransactionMovieMovieNum");
+                });
+
+            modelBuilder.Entity("MovieStore.Models.TransactionDetails", b =>
+                {
+                    b.HasOne("MovieStore.Models.Transaction", "MainTransaction")
+                        .WithMany()
+                        .HasForeignKey("MainTransactionTransactionNum");
                 });
 #pragma warning restore 612, 618
         }

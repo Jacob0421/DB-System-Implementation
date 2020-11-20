@@ -1,0 +1,52 @@
+﻿@model MovieStore.Models.Movie
+
+@{
+    ViewData["Title"] = "MovieSearch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>MovieSearch</h1>
+
+<h4>Movie</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SearchMovie" method="get" style="float:left">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <table>
+                <tr>
+                    <td><input type="text" placeholder="Search" name="movieIn" class="form-control" /> </td>
+                    <td><input type="submit" value="Search" class="btn btn-primary"></td>
+                </tr>
+            </table>
+        </form>
+        @*
+        <form asp-action="SearchMovie">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MovieTitle" class="control-label"></label>
+                <input asp-for="MovieTitle" class="form-control" />
+                <span asp-validation-for="MovieTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieRating" class="control-label"></label>
+                <input asp-for="MovieRating" class="form-control" />
+                <span asp-validation-for="MovieRating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieReleaseDate" class="control-label"></label>
+                <input asp-for="MovieReleaseDate" class="form-control" />
+                <span asp-validation-for="MovieReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+        *@
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

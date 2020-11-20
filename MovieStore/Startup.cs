@@ -32,13 +32,25 @@ namespace MovieStore
 
 
             services.AddScoped<IActorRepository, ActorRepository>();
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IPast_PurchasesRepository, Past_PurchasesRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IAge_RatingRepository, Age_RatingRepository>();
+            services.AddScoped<IDirectorRepository, DirectorRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ITransactionDetailsRepository, TransactionDetailsRepository>();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +72,8 @@ namespace MovieStore
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

@@ -11,9 +11,7 @@ namespace MovieStore.Models
     {
         [Key]
         public int RentalId { get; set; }
-        public Transaction Transaction { get; set; }
-        [Column(TypeName = "decimal(15,2)")]
-        public Decimal RentalPrice { get; set; }
+        public Transaction RentalTransaction { get; set; }
         public bool IsLate { get; set; }
         public int DaysLate { get; set; }
     }

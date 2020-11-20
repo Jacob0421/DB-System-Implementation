@@ -11,8 +11,6 @@ namespace MovieStore.Models
     {
         [Key]
         public int PurchaseId { get; set; }
-        public Transaction Transaction { get; set; }
-        [Column(TypeName = "decimal(15,2)")]
-        public Decimal PurchasePrice { get; set; }
+        public Transaction PurchaseTransaction { get; set; }
     }
 }

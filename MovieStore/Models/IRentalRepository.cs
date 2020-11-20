@@ -7,5 +7,6 @@ namespace MovieStore.Models
 {
     public interface IRentalRepository
     {
+        Rental AddRental(Transaction transactionIn);
     }
 }

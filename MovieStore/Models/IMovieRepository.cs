@@ -12,5 +12,6 @@ namespace MovieStore.Models
         Movie Delete(int id);
         IEnumerable<Movie> GetAllMovies();
         Movie GetMovie(int id);
+        IEnumerable<Movie> SearchMovies(string movieIn);
     }
 }
