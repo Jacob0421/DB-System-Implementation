@@ -18,15 +18,12 @@ namespace MovieStore.Models
         {
             IEnumerable<Transaction> userTransactions = _context.Transactions.Where(t => t.Customer == past_PurchaseIn.Customer);
 
-            userTransactions = new Transaction[0];
-            foreach (var item in userTransactions)
-            {
-               Console.WriteLine("Movie: {0}", TransactionMovie;
-            }
-            
-            Console.ReadLine();
-
             return past_PurchaseIn;
+        }
+        public void GetUserMovies(Past_Purchases Movie)
+        {
+            Console.WriteLine("Movie: {0}", Movie);
+
         }
     }
 }
