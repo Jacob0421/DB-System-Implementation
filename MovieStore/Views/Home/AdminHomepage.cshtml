@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>AdminHomepage</h1>
+<h1>Admin Homepage</h1>
 
 <div>
     <div class="text-center">
@@ -39,7 +39,7 @@
 </div>
 
     <p>
-        <a asp-action="AddMovie">Add New Movie</a>
+        <a type="button" asp-action="AddMovie" class="btn btn-primary">Add New Movie</a>
     </p>
     <table class="table">
         <thead>
@@ -61,6 +61,9 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.AgeRating.AgeRating)
+                </th>
+                <th>
+                    # In Stock
                 </th>
                 <th></th>
             </tr>
@@ -89,9 +92,10 @@
                         @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.MovieNum">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.MovieNum">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.MovieNum">Delete</a>
+                        @Html.DisplayFor(modelItem => item.MovieInventory)
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.MovieNum">Remove From Stock</a>
                     </td>
                 </tr>
             }

@@ -86,7 +86,7 @@ namespace MovieStore.Controllers
         public IActionResult AddCustomer(User CustomerIn)
         {
             _customerList.Add(CustomerIn);
-            return RedirectToAction("CustomerList");
+            return RedirectToAction("UserList");
         }
 
         public IActionResult UserList()
@@ -107,6 +107,7 @@ namespace MovieStore.Controllers
         [HttpPost]
         public IActionResult AddReview(Review ReviewIn)
         {
+            ReviewIn.Author = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
             _reviewList.Add(ReviewIn);
             return RedirectToAction("ReviewList");
         }
@@ -125,7 +126,7 @@ namespace MovieStore.Controllers
         {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult SearchMovie(string movieIn)
         {
@@ -251,9 +252,17 @@ namespace MovieStore.Controllers
             User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
             IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
-
+            foreach (var Item in userCart)
+            {
+                if (Item.Movie.MovieInventory == 0)
+                {
+                    ViewBag.Result = Item.Movie.MovieTitle + " Is not longer in stock, please remove from cart or try again at a later date.";
+                    return RedirectToAction("DisplayCart");
+                }
+            }
             foreach (var cartItem in userCart)
             {
+
                 Transaction newTransaction = _transactionList.CreateTransaction(cartItem.Movie, foundUser, cartItem.IsRental);
                 _transactionDetailsList.AddTransactionDetails(inputDetails, newTransaction);
 
@@ -285,7 +294,7 @@ namespace MovieStore.Controllers
                 }
                 foundUser.UserCartTotal = cartTotal;
 
-                ViewBag.Total = cartTotal.ToString();
+                ViewBag.Total = foundUser.UserCartTotal.ToString();
                 return View(userCart);
             }
             else
@@ -303,6 +312,8 @@ namespace MovieStore.Controllers
                 {
                     _cartList.RemoveFromCart(cartItem);
                 }
+                foundUser.AmountPaid = foundUser.UserCartTotal;
+                foundUser.UserCartTotal = 0;
                 _context.SaveChanges();
 
                 return RedirectToAction("CustomerHomepage");
@@ -327,7 +338,27 @@ namespace MovieStore.Controllers
                 return RedirectToAction("CustomerHomepage");
             }
             return View("Index");
-        } 
+        }
+
+        public IActionResult ReturnRental()
+        {
+            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if(foundUser != null)
+            {
+                IEnumerable<Rental> OutstandingUserRentals = _rentalList.GetOutstandingUserRentals(foundUser);
+                foreach(var rental in OutstandingUserRentals)
+                {
+                    var rentalDueDate = DateTime.Parse(rental.DueDate);
+                    if (rentalDueDate < DateTime.Today)
+                    {
+                        rental.IsLate = true;
+                        rental.DaysLate = (int)(DateTime.Today.Subtract(rentalDueDate).TotalDays);
+                    }
+                }
+                return View(OutstandingUserRentals);
+            }else
+                return View("Login");
+        }
 
         public IActionResult Privacy()
         {

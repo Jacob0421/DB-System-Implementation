@@ -8,5 +8,6 @@ namespace MovieStore.Models
     public interface IRentalRepository
     {
         Rental AddRental(Transaction transactionIn);
+        IEnumerable<Rental> GetOutstandingUserRentals(User userIn);
     }
 }

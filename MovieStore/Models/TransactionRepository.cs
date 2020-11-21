@@ -26,5 +26,10 @@ namespace MovieStore.Models
             _context.SaveChangesAsync();
             return newTransaction;
         }
+
+        public IEnumerable<Transaction> GetUserTransactions(User userIn)
+        {
+            return _context.Transactions.Where(t => t.Customer == userIn);
+        }
     }
 }

@@ -9,9 +9,9 @@
 <p class="text-danger">
     @ViewBag.Result
 </p>
-<a asp-action="DisplayCart">My Cart</a>
+<a type="button" asp-action="DisplayCart" class="btn btn-primary">My Cart</a>
 <br />
-<table class="table">
+<table class="table text text-center" style="width: 120%">
     <thead>
         <tr>
             <th>
@@ -43,7 +43,7 @@
                     @Html.DisplayFor(modelItem => item.MovieTitle)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MovieRating)
+                    @Html.DisplayFor(modelItem => item.MovieRating) Stars
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Director.FName) @Html.DisplayFor(modelItem => item.Director.LName)
@@ -58,7 +58,7 @@
                     @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
                 </td>
                 <td>
-                   <a type="button" asp-action="AddRental" asp-route-movieId="@item.MovieNum" class="btn btn-success">Rent Movie</a>   <a type="button" asp-action="AddPurchase" asp-route-movieId="@item.MovieNum" class="btn btn-primary">Purchase Movie</a>
+                   <a type="button" asp-action="AddRental" asp-route-movieId="@item.MovieNum" class="btn btn-success">Rent</a>   <a type="button" asp-action="AddPurchase" asp-route-movieId="@item.MovieNum" class="btn btn-primary">Purchase</a>
                 </td>
             </tr>
         }

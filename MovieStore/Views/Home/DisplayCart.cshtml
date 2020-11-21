@@ -21,7 +21,7 @@
                 @Html.DisplayNameFor(model => model.Movie.MovieReleaseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsRental)
+                Purchase/Rental
             </th>
             <th>
                 Price
@@ -30,34 +30,45 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Movie.MovieTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Movie.MovieRating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Movie.MovieReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRental)
-            </td>
-            @if (item.IsRental)
-            {
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
-                    $@Html.DisplayFor(modelItem => item.Movie.RentalPrice)
+                    @Html.DisplayFor(modelItem => item.Movie.MovieTitle)
                 </td>
-            }
-            else
-            {
                 <td>
-                    $@Html.DisplayFor(modelItem => item.Movie.PurchasePrice)
+                    @Html.DisplayFor(modelItem => item.Movie.MovieRating)
                 </td>
-            }
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.Movie.MovieReleaseDate)
+                </td>
+                <td>
+                    @if (item.IsRental)
+                    {
+                        @:Rental
+                    }
+                    else
+                    {
+                        @:Purchase
+                    }
+                </td>
+                @if (item.IsRental)
+                {
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.Movie.RentalPrice)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.Movie.PurchasePrice)
+                    </td>
+                }
+                <td>
+                    <a type="button" asp-action="RemoveFromCart" asp-route-cartId="@item.CartId" class="btn btn-primary">Remove</a>
+                </td>
+            </tr>
+        }
         <tr>
             <td colspan="5" class="text-lg-right font-weight-bold"> Total: $@ViewBag.Total</td>
         </tr>

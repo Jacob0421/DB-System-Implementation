@@ -11,7 +11,7 @@ namespace MovieStore.Models
 
         private readonly AppDbContext _context;
 
-        public MovieRepository (AppDbContext context)
+        public MovieRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -19,8 +19,27 @@ namespace MovieStore.Models
         public Movie Add(Movie movieIn)
         {
             if (movieIn != null)
-            _context.Add(movieIn);
-            _context.SaveChanges();
+            {
+                DateTime releaseDate = DateTime.Parse(movieIn.MovieReleaseDate);
+
+                if (releaseDate.AddMonths(2) >= DateTime.Today)
+                    movieIn.IsNewRelease = true;
+                else
+                    movieIn.IsNewRelease = false;
+
+                if (movieIn.IsNewRelease)
+                {
+                    movieIn.RentalPrice = (decimal)4.50;
+                    movieIn.PurchasePrice = (decimal)30.00;
+                }
+                else
+                {
+                    movieIn.RentalPrice = (decimal)3.00;
+                    movieIn.PurchasePrice = (decimal)20.00;
+                }
+                _context.Add(movieIn);
+                _context.SaveChanges();
+            }
             return movieIn;
         }
 
@@ -42,10 +61,10 @@ namespace MovieStore.Models
 
         public IEnumerable<Movie> SearchMovies(string keyIn)
         {
-            IEnumerable<Movie> searchResults = _context.Movies.Include(m=>m.Director).Include(m => m.Genre).Where(o => o.MovieTitle.ToLower().Contains(keyIn.ToLower())
-                                           || o.Genre.GenreName.ToLower().Contains(keyIn.ToLower())
-                                           || o.Director.FName.ToLower().Contains(keyIn.ToLower())
-                                           || o.Director.LName.ToLower().Contains(keyIn.ToLower()));
+            IEnumerable<Movie> searchResults = _context.Movies.Include(m => m.Director).Include(m => m.Genre).Where(o => o.MovieTitle.ToLower().Contains(keyIn.ToLower())
+                                             || o.Genre.GenreName.ToLower().Contains(keyIn.ToLower())
+                                             || o.Director.FName.ToLower().Contains(keyIn.ToLower())
+                                             || o.Director.LName.ToLower().Contains(keyIn.ToLower()));
             return searchResults;
         }
 

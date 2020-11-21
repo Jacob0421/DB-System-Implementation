@@ -16,14 +16,31 @@ namespace MovieStore.Models
 
         public Rental AddRental(Transaction transactionIn)
         {
+            string dueDate;
+            if (transactionIn.TransactionMovie.IsNewRelease)
+            {
+                dueDate = DateTime.Parse(transactionIn.TransactionDate).AddDays(4).ToString();
+            } else
+            {
+                dueDate = DateTime.Parse(transactionIn.TransactionDate).AddDays(5).ToString();
+            }
+
             Rental newRental = new Rental()
             {
                 RentalTransaction = transactionIn,
                 IsLate = false,
-                DaysLate = 0                
+                DaysLate = 0,
+                Returned = false,
+                DueDate = dueDate
             };
             _context.Rentals.Add(newRental);
             return newRental;
+        }
+
+        public IEnumerable<Rental> GetOutstandingUserRentals(User userIn)
+        {
+            return _context.Rentals.Where(r => r.RentalTransaction.Customer == userIn && r.Returned == false);
+            //throw new NotImplementedException();
         }
     }
 }

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<MovieStore.Models.Rental>
+
+@{
+    ViewData["Title"] = "ReturnRental";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ReturnRental</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Due Date
+            </th>
+            <th>
+                Movie Title
+            </th>
+            <th>
+                Rented On
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Returned)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysLate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @if (item.IsLate)
+                {
+                    @:<p class="text-danger">@DateTime.Parse(item.DueDate).ToLongDateString()</p>
+                }
+                else
+                {
+                    @:<p>@DateTime.Parse(item.DueDate).ToLongDateString()</p>
+                }
+            </td>
+            <td>
+                @item.RentalTransaction.TransactionMovie.MovieTitle
+            </td>
+            <td>
+                @DateTime.Parse(item.RentalTransaction.TransactionDate).ToLongDateString()
+            </td>
+            <td>
+                <p class="text-danger">Not Returned</p>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DaysLate)
+            </td>
+            <td>
+                <a type="button" asp-action="ReturnRental" asp-route-rentalId="@item.RentalId" class="btn btn-primary">Return</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

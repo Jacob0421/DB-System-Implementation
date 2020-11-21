@@ -8,5 +8,6 @@ namespace MovieStore.Models
     public interface ITransactionRepository
     {
         Transaction CreateTransaction(Movie movieIn, User userIn, bool IsRental);
+        IEnumerable<Transaction> GetUserTransactions(User userIn);
     }
 }

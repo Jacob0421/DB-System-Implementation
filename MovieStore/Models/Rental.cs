@@ -13,6 +13,8 @@ namespace MovieStore.Models
         public int RentalId { get; set; }
         public Transaction RentalTransaction { get; set; }
         public bool IsLate { get; set; }
+        public bool Returned { get; set; }
         public int DaysLate { get; set; }
+        public string DueDate { get; set; }
     }
 }

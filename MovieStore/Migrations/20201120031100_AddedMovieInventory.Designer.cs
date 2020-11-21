@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieStore.Models;
 
 namespace MovieStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201120031100_AddedMovieInventory")]
+    partial class AddedMovieInventory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,14 +118,11 @@ namespace MovieStore.Migrations
                     b.Property<string>("GenreName")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsNewRelease")
-                        .HasColumnType("bit");
-
                     b.Property<int>("MovieInventory")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MovieRating")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("MovieRating")
+                        .HasColumnType("int");
 
                     b.Property<string>("MovieReleaseDate")
                         .HasColumnType("nvarchar(max)");
@@ -175,17 +174,11 @@ namespace MovieStore.Migrations
                     b.Property<int>("DaysLate")
                         .HasColumnType("int");
 
-                    b.Property<string>("DueDate")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsLate")
                         .HasColumnType("bit");
 
                     b.Property<int?>("RentalTransactionTransactionNum")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Returned")
-                        .HasColumnType("bit");
 
                     b.HasKey("RentalId");
 
@@ -201,8 +194,8 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorUserNum")
-                        .HasColumnType("int");
+                    b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("MovieNum")
                         .HasColumnType("int");
@@ -223,8 +216,6 @@ namespace MovieStore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ReviewNum");
-
-                    b.HasIndex("AuthorUserNum");
 
                     b.HasIndex("MovieNum");
 
@@ -323,11 +314,11 @@ namespace MovieStore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountOwed")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("AmountOwed")
+                        .HasColumnType("float");
 
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("AmountPaid")
+                        .HasColumnType("float");
 
                     b.Property<int>("RecommendedBy")
                         .HasColumnType("int");
@@ -400,10 +391,6 @@ namespace MovieStore.Migrations
 
             modelBuilder.Entity("MovieStore.Models.Review", b =>
                 {
-                    b.HasOne("MovieStore.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorUserNum");
-
                     b.HasOne("MovieStore.Models.Movie", "Movie")
                         .WithMany()
                         .HasForeignKey("MovieNum");

@@ -17,8 +17,8 @@ namespace MovieStore.Models
         public string UserDOB { get; set; }
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
-        public double AmountOwed { get; set; }
-        public double AmountPaid { get; set; }
+        public decimal AmountOwed { get; set; }
+        public decimal AmountPaid { get; set; }
         public int RecommendedBy { get; set; }
         public string role { get; set; }
         public decimal UserCartTotal { get; set; }

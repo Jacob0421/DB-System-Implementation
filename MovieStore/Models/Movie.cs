@@ -16,11 +16,13 @@ namespace MovieStore.Models
         public string MovieTitle { get; set; }
         public Director Director{ get; set; }
         [HiddenInput]
-        public int MovieRating { get; set; }
+        public decimal MovieRating { get; set; }
         public string MovieReleaseDate{ get; set; }
         public Genre Genre { get; set; }
         public Age_Rating AgeRating { get; set; }
         public decimal RentalPrice { get; set; }
         public decimal PurchasePrice { get; set; }
+        public int MovieInventory { get; set; }
+        public bool IsNewRelease { get; set; }
     }
 }
