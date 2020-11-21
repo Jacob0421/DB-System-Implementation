@@ -275,7 +275,9 @@ namespace MovieStore.Controllers
                     _purchaseList.AddPurchase(newTransaction);
 
                 };
+                cartItem.Movie.MovieInventory--;
             };
+
             _context.SaveChanges();
             return RedirectToAction("DisplayOrderConfirmation");
         }

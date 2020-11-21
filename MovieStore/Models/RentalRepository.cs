@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace MovieStore.Models
 
         public IEnumerable<Rental> GetOutstandingUserRentals(User userIn)
         {
-            return _context.Rentals.Where(r => r.RentalTransaction.Customer == userIn && r.Returned == false);
+            return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie). Where(r => r.RentalTransaction.Customer == userIn && r.Returned == false);
             //throw new NotImplementedException();
         }
     }
