@@ -4,40 +4,40 @@
     ViewData["Title"] = "CustomerHomepage";
 }
 
-<h1>Customer Homepage</h1>
+<h1 class="text-center">Customer Homepage</h1>
 
-<a type="button" asp-action="DisplayCart" class="btn btn-primary" style="float: right; padding-right: -20%;">My Cart</a>
+<a type="button" asp-action="DisplayCart" class="btn btn-primary" style="float: right; margin-right: -15%;">My Cart</a>
 <br />
 <br />
 
 @if (ViewBag.Result != null)
 {
-    @:<div class="border-success alert-success text-success text-center" style="border-radius: 25px; width: 120%;" ><p>@ViewBag.Result</p></div>
+    @:<div class="border-success alert-success text-success text-center font-weight-bold" style="border-radius: 25px; width: 120%;" ><p>@ViewBag.Result</p></div>
 }
 @if (ViewBag.Failure != null)
 {
-    @:<div class="border-danger alert-danger text-danger text-center" style="border-radius: 25px; width: 120%;"><p>@ViewBag.Failure</p></div>
+    @:<div class="border-danger alert-danger text-danger text-center font-weight-bold" style="border-radius: 25px; width: 120%;"><p>@ViewBag.Failure</p></div>
 }
-<table class="table align-content-center" style="width: 120%">
+<table class="table text-center" style="width: 120%">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MovieTitle)
+                Movie Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MovieRating)
+                Ratings
             </th>
             <th>
-                director Name
+                Director Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MovieReleaseDate)
+                Release Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genre.GenreName)
+                Genre
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AgeRating.AgeRating)
+                Age Rating
             </th>
             <th></th>
         </tr>

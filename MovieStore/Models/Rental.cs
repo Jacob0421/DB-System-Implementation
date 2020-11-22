@@ -16,6 +16,6 @@ namespace MovieStore.Models
         public bool Returned { get; set; }
         public int DaysLate { get; set; }
         public string DueDate { get; set; }
-        public decimal rentalFinalCost { get; set; }
+        public decimal RentalFinalCost { get; set; }
     }
 }

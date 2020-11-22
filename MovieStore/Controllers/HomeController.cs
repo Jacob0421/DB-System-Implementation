@@ -75,7 +75,11 @@ namespace MovieStore.Controllers
 
         public IActionResult CheckBalance()
         {
-            return View();
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            IEnumerable<Rental> userPastDueRentals = _rentalList.GetOutstandingUserRentals(currentUser).Where(r => r.IsLate);
+
+            ViewBag.UserBalance = currentUser.AmountOwed;
+            return View(userPastDueRentals);
         }
         public IActionResult AddCustomer()
         {
@@ -197,26 +201,47 @@ namespace MovieStore.Controllers
             Movie movieIn = _movieList.GetMovie(movieId);
 
             IEnumerable<Rental> userRentals = _rentalList.GetOutstandingUserRentals(currentUser);
-            int numOfOutstandingRentals = userRentals.Count();
-            if(numOfOutstandingRentals < 2)
+            IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
+
+            bool alreadyInCart = false;
+            foreach (var cartItem in userCart)
             {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
-                int numOfPendingRentals = userCart.Where(c => c.IsRental == true).Count();
-                if((numOfPendingRentals + numOfOutstandingRentals) < 2)
+                if (cartItem.Movie.Equals(movieIn))
                 {
-                    _cartList.AddToCart(movieIn, currentUser, true);
-                    currentUser.UserCartTotal += movieIn.RentalPrice;
-                    _context.SaveChanges();
-                    TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart";
-                } else
+                    alreadyInCart = true;
+                    break;
+                }
+            }
+
+
+            if (!alreadyInCart)
+            {
+                int numOfOutstandingRentals = userRentals.Count();
+                if (numOfOutstandingRentals < 2)
+                {
+                    int numOfPendingRentals = userCart.Where(c => c.IsRental == true).Count();
+                    if ((numOfPendingRentals + numOfOutstandingRentals) < 2)
+                    {
+                        _cartList.AddToCart(movieIn, currentUser, true);
+                        currentUser.UserCartTotal += movieIn.RentalPrice;
+                        _context.SaveChanges();
+                        TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart";
+                    }
+                    else
+                    {
+                        TempData["Failure"] = movieIn.MovieTitle + " was NOT added to your cart. \n" +
+                                                                   "You can only have two rentals at a time";
+                    }
+                }
+                else
                 {
                     TempData["Failure"] = movieIn.MovieTitle + " was NOT added to your cart. \n" +
                                                                "You can only have two rentals at a time";
                 }
-            } else
+            }
+            else
             {
-                TempData["Failure"] = movieIn.MovieTitle + " was NOT added to your cart. \n" +
-                                                           "You can only have two rentals at a time";
+                TempData["Failure"] = movieIn.MovieTitle + " is already in your cart.";
             }
             return RedirectToAction("CustomerHomepage");
         }
@@ -225,13 +250,30 @@ namespace MovieStore.Controllers
         public IActionResult AddPurchase(int movieId)
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-
             Movie movieIn = _movieList.GetMovie(movieId);
-            _cartList.AddToCart(movieIn, currentUser, false);
-            currentUser.UserCartTotal += movieIn.PurchasePrice;
-            _context.SaveChanges();
+            IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
+            bool alreadyInCart = false;
 
-            TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart.";
+            foreach (var cartItem in userCart)
+            {
+                if (cartItem.Movie.Equals(movieIn))
+                {
+                    alreadyInCart = true;
+                    break;
+                }
+            }
+            if (!alreadyInCart)
+            {
+                _cartList.AddToCart(movieIn, currentUser, false);
+                currentUser.UserCartTotal += movieIn.PurchasePrice;
+                _context.SaveChanges();
+
+                TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart.";
+            }
+            else
+            {
+                TempData["Failure"] = movieIn.MovieTitle + " is already in your cart";
+            }
             return RedirectToAction("CustomerHomepage");
         }
 
@@ -241,10 +283,13 @@ namespace MovieStore.Controllers
 
             if (currentUser != null)
             {
+
                 IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
                 ViewBag.Total = currentUser.UserCartTotal;
-                if(TempData["Result"] != null)
+                if (TempData["Result"] != null)
                     ViewBag.Result = TempData["Result"];
+                if (TempData["HasBalance"] != null)
+                    ViewBag.HasBalance = TempData["HasBalance"];
                 return View(userCart);
             }
             else
@@ -264,6 +309,12 @@ namespace MovieStore.Controllers
 
         public IActionResult DisplayCheckout()
         {
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if (currentUser.AmountOwed != 0)
+            {
+                TempData["HasBalance"] = "You cannot checkout these items. You currently have an outstanding balance of $" + currentUser.AmountOwed + ".";
+                return RedirectToAction("DisplayCart");
+            }
             return View();
         }
 
@@ -366,10 +417,10 @@ namespace MovieStore.Controllers
         public IActionResult ReturnRental()
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-            if(currentUser != null)
+            if (currentUser != null)
             {
                 IEnumerable<Rental> OutstandingUserRentals = _rentalList.GetOutstandingUserRentals(currentUser);
-                foreach(var rental in OutstandingUserRentals)
+                foreach (var rental in OutstandingUserRentals)
                 {
                     var rentalDueDate = DateTime.Parse(rental.DueDate);
                     if (rentalDueDate < DateTime.Today)
@@ -380,7 +431,8 @@ namespace MovieStore.Controllers
                 }
                 _context.SaveChanges();
                 return View(OutstandingUserRentals);
-            }else
+            }
+            else
                 return View("Login");
         }
 
@@ -390,18 +442,9 @@ namespace MovieStore.Controllers
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
             Rental toBeReturned = _rentalList.GetRentalById(rentalId);
 
-            if(currentUser != null && toBeReturned != null)
+            if (currentUser != null && toBeReturned != null)
             {
-                if (toBeReturned.IsLate && toBeReturned.DaysLate < 15)
-                {
-                    toBeReturned.rentalFinalCost = (decimal)(toBeReturned.DaysLate * 2.00);
-                    toBeReturned.RentalTransaction.Customer.AmountOwed += toBeReturned.rentalFinalCost;
-                }
-                else if (toBeReturned.IsLate && toBeReturned.DaysLate > 15)
-                {
-                    toBeReturned.rentalFinalCost = (decimal)(toBeReturned.RentalTransaction.TransactionMovie.PurchasePrice + (decimal)(15 * 2.00));
-                    toBeReturned.RentalTransaction.Customer.AmountOwed += toBeReturned.rentalFinalCost;
-                } else
+                if (!toBeReturned.IsLate)
                 {
                     toBeReturned.Returned = true;
                     _context.SaveChanges();
@@ -410,10 +453,6 @@ namespace MovieStore.Controllers
                 }
 
                 ViewBag.RentalId = toBeReturned.RentalId;
-                toBeReturned.Returned = true;
-                toBeReturned.RentalTransaction.TransactionMovie.MovieInventory++;
-
-                _context.SaveChanges();
                 return View("FeePayment");
 
             }
@@ -432,8 +471,14 @@ namespace MovieStore.Controllers
         public IActionResult FeePayment(TransactionDetails inputdetails, int rentalId)
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-            currentUser.AmountPaid += _rentalList.GetRentalById(rentalId).rentalFinalCost;
-            currentUser.AmountOwed -= _rentalList.GetRentalById(rentalId).rentalFinalCost;
+            Rental toBeReturned = _rentalList.GetRentalById(rentalId);
+
+            currentUser.AmountPaid += _rentalList.GetRentalById(rentalId).RentalFinalCost;
+            currentUser.AmountOwed -= _rentalList.GetRentalById(rentalId).RentalFinalCost;
+
+            toBeReturned.Returned = true;
+            toBeReturned.RentalTransaction.TransactionMovie.MovieInventory++;
+
             inputdetails.MainTransaction = _rentalList.GetRentalById(rentalId).RentalTransaction;
             _context.SaveChanges();
             return RedirectToAction("ReturnRental");
@@ -469,6 +514,28 @@ namespace MovieStore.Controllers
                 else if (currentUser.UserUserName.Equals(username) && currentUser.role != "admin")
                 {
                     HttpContext.Session.SetString("Username", username);
+
+                    IEnumerable<Rental> OutstandingUserRentals = _rentalList.GetOutstandingUserRentals(currentUser);
+                    foreach (var rental in OutstandingUserRentals)
+                    {
+                        var rentalDueDate = DateTime.Parse(rental.DueDate);
+                        if (rentalDueDate < DateTime.Today)
+                        {
+                            rental.IsLate = true;
+                            rental.DaysLate = (int)(DateTime.Today.Subtract(rentalDueDate).TotalDays);
+                            if (rental.IsLate && rental.DaysLate < 15)
+                            {
+                                rental.RentalFinalCost = (decimal)(rental.DaysLate * 2.00);
+                                rental.RentalTransaction.Customer.AmountOwed += rental.RentalFinalCost;
+                            }
+                            else if (rental.IsLate && rental.DaysLate > 15)
+                            {
+                                rental.RentalFinalCost = (decimal)(rental.RentalTransaction.TransactionMovie.PurchasePrice + (decimal)(15 * 2.00));
+                                rental.RentalTransaction.Customer.AmountOwed += rental.RentalFinalCost;
+                            }
+                        }
+                    }
+                    _context.SaveChanges();
                     return RedirectToAction("CustomerHomepage");
                 }
                 else

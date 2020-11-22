@@ -10,7 +10,10 @@
 @if(ViewBag.Result != null)
 {
     @:<div class="border-success alert-success text-success text-center" style="border-radius: 25px;"><p >@ViewBag.Result</p></div>
-    
+}
+@if(ViewBag.HasBalance != null)
+{
+    @:<div class="border-danger alert-danger text-danger text-center" style="border-radius: 25px;">@ViewBag.HasBalance Please check your balance <a href="/Home/CheckBalance">HERE</a> to resolve.</div>
 }
 
 <table class="table">
@@ -78,7 +81,7 @@
             <td colspan="5" class="text-lg-right font-weight-bold"> Total: $@ViewBag.Total</td>
         </tr>
         <tr>
-            <td><a type="button" asp-action="DisplayCheckout">Checkout</a></td>
+            <td><a type="button" asp-action="DisplayCheckout" class="btn btn-primary" style="float: right;">Checkout</a></td>
         </tr>
     </tbody>
 </table>
