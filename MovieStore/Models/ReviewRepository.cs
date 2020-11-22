@@ -13,6 +13,7 @@ namespace MovieStore.Models
         }
         public Review Add(Review ReviewIn)
         {
+            ReviewIn.ReviewDate = DateTime.Today.ToShortDateString();
             _context.Reviews.Add(ReviewIn);
             _context.SaveChanges();
             return ReviewIn;

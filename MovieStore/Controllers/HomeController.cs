@@ -68,18 +68,19 @@ namespace MovieStore.Controllers
             return View();
         }
 
-        public IActionResult UserHome()
-        {
-            return View();
-        }
-
         public IActionResult CheckBalance()
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-            IEnumerable<Rental> userPastDueRentals = _rentalList.GetOutstandingUserRentals(currentUser).Where(r => r.IsLate);
+            if (currentUser != null)
+            {
+                IEnumerable<Rental> userPastDueRentals = _rentalList.GetOutstandingUserRentals(currentUser).Where(r => r.IsLate);
 
-            ViewBag.UserBalance = currentUser.AmountOwed;
-            return View(userPastDueRentals);
+                ViewBag.UserBalance = currentUser.AmountOwed;
+                return View(userPastDueRentals);
+            } else
+            {
+                return View("Login");
+            }
         }
         public IActionResult AddCustomer()
         {
@@ -105,15 +106,31 @@ namespace MovieStore.Controllers
 
         public IActionResult AddReview()
         {
-            return View();
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if (currentUser != null)
+            {
+                return View();
+            }
+            else
+            {
+                return View("Login");
+            }
         }
 
         [HttpPost]
         public IActionResult AddReview(Review ReviewIn)
         {
-            ReviewIn.Author = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-            _reviewList.Add(ReviewIn);
-            return RedirectToAction("ReviewList");
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if (currentUser != null)
+            {
+                ReviewIn.Author = currentUser;
+                _reviewList.Add(ReviewIn);
+                return RedirectToAction("ReviewList");
+            }
+            else
+            {
+                return View("Login");
+            }
         }
 
         public IActionResult AdminHomepage()
@@ -186,11 +203,19 @@ namespace MovieStore.Controllers
 
         public IActionResult CustomerHomepage()
         {
-            if (TempData["Result"] != null)
-                ViewBag.Result = TempData["Result"];
-            if (TempData["Failure"] != null)
-                ViewBag.Failure = TempData["Failure"];
-            return View(_movieList.GetAllMovies());
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if (currentUser != null)
+            {
+                if (TempData["Result"] != null)
+                    ViewBag.Result = TempData["Result"];
+                if (TempData["Failure"] != null)
+                    ViewBag.Failure = TempData["Failure"];
+                return View(_movieList.GetAllMovies());
+            }
+            else
+            {
+                return View("Login");
+            }
         }
 
         [HttpGet]
@@ -388,25 +413,6 @@ namespace MovieStore.Controllers
                 }
                 currentUser.AmountPaid = currentUser.UserCartTotal;
                 currentUser.UserCartTotal = 0;
-                _context.SaveChanges();
-
-                return RedirectToAction("CustomerHomepage");
-            }
-            return View("Index");
-        }
-
-        public IActionResult CancelledOrders()
-        {
-            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-
-            if (currentUser != null)
-            {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
-
-                foreach (var cartItem in userCart)
-                {
-                    _cartList.RemoveFromCart(cartItem);
-                }
                 _context.SaveChanges();
 
                 return RedirectToAction("CustomerHomepage");

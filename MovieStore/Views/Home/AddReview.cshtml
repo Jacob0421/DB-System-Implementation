@@ -24,20 +24,16 @@
                 <span asp-validation-for="MovieTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReviewBody" class="control-label"></label>
-                <input type="text" asp-for="ReviewBody" class="form-control"  style="width: 80%; height: 200px; text-wrap: none;"/>
-                <span asp-validation-for="ReviewBody" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReviewDate" class="control-label"></label>
-                <input asp-for="ReviewDate" class="form-control" />
-                <span asp-validation-for="ReviewDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="StarRating" class="control-label"></label>
-                <input asp-for="StarRating" class="form-control"/>
+                <input type="number" asp-for="StarRating" class="form-control" style="width: 60px;" max="5"/>
                 <span asp-validation-for="StarRating" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ReviewBody" class="control-label"></label>
+                <textarea asp-for="ReviewBody" class="form-control" style="resize: none; width: 250%; height: 400px;" placeholder="Write your review of the movie here"></textarea>
+                <span asp-validation-for="ReviewBody" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
