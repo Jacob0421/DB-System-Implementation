@@ -6,12 +6,19 @@
 
 <h1>Customer Homepage</h1>
 
-<p class="text-danger">
-    @ViewBag.Result
-</p>
-<a type="button" asp-action="DisplayCart" class="btn btn-primary">My Cart</a>
+<a type="button" asp-action="DisplayCart" class="btn btn-primary" style="float: right; padding-right: -20%;">My Cart</a>
 <br />
-<table class="table text text-center" style="width: 120%">
+<br />
+
+@if (ViewBag.Result != null)
+{
+    @:<div class="border-success alert-success text-success text-center" style="border-radius: 25px; width: 120%;" ><p>@ViewBag.Result</p></div>
+}
+@if (ViewBag.Failure != null)
+{
+    @:<div class="border-danger alert-danger text-danger text-center" style="border-radius: 25px; width: 120%;"><p>@ViewBag.Failure</p></div>
+}
+<table class="table align-content-center" style="width: 120%">
     <thead>
         <tr>
             <th>
@@ -57,8 +64,8 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.AgeRating.AgeRating)
                 </td>
-                <td>
-                   <a type="button" asp-action="AddRental" asp-route-movieId="@item.MovieNum" class="btn btn-success">Rent</a>   <a type="button" asp-action="AddPurchase" asp-route-movieId="@item.MovieNum" class="btn btn-primary">Purchase</a>
+                <td class="align-self-center">
+                    <a type="button" asp-action="AddRental" asp-route-movieId="@item.MovieNum" class="btn btn-success">Rent</a>   <a type="button" asp-action="AddPurchase" asp-route-movieId="@item.MovieNum" class="btn btn-primary">Purchase</a>
                 </td>
             </tr>
         }

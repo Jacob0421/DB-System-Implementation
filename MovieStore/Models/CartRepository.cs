@@ -42,7 +42,7 @@ namespace MovieStore.Models
 
         public Cart GetCartItemById(int cartIdIn)
         {
-            return _context.Carts.FirstOrDefault(c => c.CartId == cartIdIn);
+            return _context.Carts.Include(c => c.CartOwner).Include(c => c.Movie).FirstOrDefault(c => c.CartId == cartIdIn);
         }
 
         public decimal getMoviePrice(Movie movieIn, bool isRental)

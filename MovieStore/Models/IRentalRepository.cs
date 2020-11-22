@@ -9,5 +9,6 @@ namespace MovieStore.Models
     {
         Rental AddRental(Transaction transactionIn);
         IEnumerable<Rental> GetOutstandingUserRentals(User userIn);
+        Rental GetRentalById(int rentalIdIn);
     }
 }

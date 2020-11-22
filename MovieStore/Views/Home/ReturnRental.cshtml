@@ -8,7 +8,7 @@
 <h1>Rental Return</h1>
 
 
-<table class="table">
+<table class="table text-center">
     <thead>
         <tr>
             <th>
@@ -55,7 +55,7 @@
                 @Html.DisplayFor(modelItem => item.DaysLate)
             </td>
             <td>
-                <a type="button" asp-action="ReturnRental" asp-route-rentalId="@item.RentalId" class="btn btn-primary">Return</a>
+                <a type="button" asp-action="ReturnRentedMovie" asp-route-rentalId="@item.RentalId" class="btn btn-primary" m>Return</a>
             </td>
         </tr>
 }

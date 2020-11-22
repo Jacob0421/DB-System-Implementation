@@ -41,7 +41,11 @@ namespace MovieStore.Models
         public IEnumerable<Rental> GetOutstandingUserRentals(User userIn)
         {
             return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie). Where(r => r.RentalTransaction.Customer == userIn && r.Returned == false);
-            //throw new NotImplementedException();
+        }
+
+        public Rental GetRentalById(int rentalIdIn)
+        {
+            return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie).FirstOrDefault(r => r.RentalId == rentalIdIn);
         }
     }
 }

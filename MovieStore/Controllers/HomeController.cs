@@ -182,6 +182,10 @@ namespace MovieStore.Controllers
 
         public IActionResult CustomerHomepage()
         {
+            if (TempData["Result"] != null)
+                ViewBag.Result = TempData["Result"];
+            if (TempData["Failure"] != null)
+                ViewBag.Failure = TempData["Failure"];
             return View(_movieList.GetAllMovies());
         }
 
@@ -191,9 +195,29 @@ namespace MovieStore.Controllers
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
             Movie movieIn = _movieList.GetMovie(movieId);
-            _cartList.AddToCart(movieIn, currentUser, true);
 
-            ViewBag.Result = "Rental Successfully Added";
+            IEnumerable<Rental> userRentals = _rentalList.GetOutstandingUserRentals(currentUser);
+            int numOfOutstandingRentals = userRentals.Count();
+            if(numOfOutstandingRentals < 2)
+            {
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
+                int numOfPendingRentals = userCart.Where(c => c.IsRental == true).Count();
+                if((numOfPendingRentals + numOfOutstandingRentals) < 2)
+                {
+                    _cartList.AddToCart(movieIn, currentUser, true);
+                    currentUser.UserCartTotal += movieIn.RentalPrice;
+                    _context.SaveChanges();
+                    TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart";
+                } else
+                {
+                    TempData["Failure"] = movieIn.MovieTitle + " was NOT added to your cart. \n" +
+                                                               "You can only have two rentals at a time";
+                }
+            } else
+            {
+                TempData["Failure"] = movieIn.MovieTitle + " was NOT added to your cart. \n" +
+                                                           "You can only have two rentals at a time";
+            }
             return RedirectToAction("CustomerHomepage");
         }
 
@@ -204,40 +228,37 @@ namespace MovieStore.Controllers
 
             Movie movieIn = _movieList.GetMovie(movieId);
             _cartList.AddToCart(movieIn, currentUser, false);
+            currentUser.UserCartTotal += movieIn.PurchasePrice;
+            _context.SaveChanges();
 
-            ViewBag.Result = "Purchase Successfully Added";
+            TempData["Result"] = movieIn.MovieTitle + " was successfully added to your cart.";
             return RedirectToAction("CustomerHomepage");
         }
 
         public IActionResult DisplayCart()
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-            if (foundUser != null)
+            if (currentUser != null)
             {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
-                decimal cartTotal = 0;
-                foreach (var cartItem in userCart)
-                {
-                    cartTotal += _cartList.getMoviePrice(cartItem.Movie, cartItem.IsRental);
-                }
-                foundUser.UserCartTotal = cartTotal;
-
-                ViewBag.Total = cartTotal.ToString();
-                ViewBag.UserNum = foundUser.UserNum;
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
+                ViewBag.Total = currentUser.UserCartTotal;
+                if(TempData["Result"] != null)
+                    ViewBag.Result = TempData["Result"];
                 return View(userCart);
             }
             else
-                return RedirectToAction("CustomerHomepage");
+                return View("Login ");
         }
 
         [HttpGet]
         public IActionResult RemoveFromCart(int cartId)
         {
             Cart foundCartItem = _cartList.GetCartItemById(cartId);
-
             _cartList.RemoveFromCart(foundCartItem);
+            foundCartItem.CartOwner.UserCartTotal -= _cartList.getMoviePrice(foundCartItem.Movie, foundCartItem.IsRental);
             _context.SaveChanges();
+            TempData["Result"] = foundCartItem.Movie.MovieTitle + " was successfully removed from your cart.";
             return RedirectToAction("DisplayCart");
         }
 
@@ -249,9 +270,9 @@ namespace MovieStore.Controllers
         [HttpPost]
         public IActionResult CreateTransaction(TransactionDetails inputDetails)
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-            IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+            IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
             foreach (var Item in userCart)
             {
                 if (Item.Movie.MovieInventory == 0)
@@ -263,7 +284,7 @@ namespace MovieStore.Controllers
             foreach (var cartItem in userCart)
             {
 
-                Transaction newTransaction = _transactionList.CreateTransaction(cartItem.Movie, foundUser, cartItem.IsRental);
+                Transaction newTransaction = _transactionList.CreateTransaction(cartItem.Movie, currentUser, cartItem.IsRental);
                 _transactionDetailsList.AddTransactionDetails(inputDetails, newTransaction);
 
                 if (cartItem.IsRental)
@@ -284,19 +305,19 @@ namespace MovieStore.Controllers
 
         public IActionResult DisplayOrderConfirmation()
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-            if (foundUser != null)
+            if (currentUser != null)
             {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
                 decimal cartTotal = 0;
                 foreach (var cartItem in userCart)
                 {
                     cartTotal += _cartList.getMoviePrice(cartItem.Movie, cartItem.IsRental);
                 }
-                foundUser.UserCartTotal = cartTotal;
+                currentUser.UserCartTotal = cartTotal;
 
-                ViewBag.Total = foundUser.UserCartTotal.ToString();
+                ViewBag.Total = currentUser.UserCartTotal.ToString();
                 return View(userCart);
             }
             else
@@ -305,17 +326,17 @@ namespace MovieStore.Controllers
 
         public IActionResult Orderconfirmed()
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-            if (foundUser != null)
+            if (currentUser != null)
             {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
                 foreach (var cartItem in userCart)
                 {
                     _cartList.RemoveFromCart(cartItem);
                 }
-                foundUser.AmountPaid = foundUser.UserCartTotal;
-                foundUser.UserCartTotal = 0;
+                currentUser.AmountPaid = currentUser.UserCartTotal;
+                currentUser.UserCartTotal = 0;
                 _context.SaveChanges();
 
                 return RedirectToAction("CustomerHomepage");
@@ -325,11 +346,11 @@ namespace MovieStore.Controllers
 
         public IActionResult CancelledOrders()
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
 
-            if (foundUser != null)
+            if (currentUser != null)
             {
-                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(foundUser);
+                IEnumerable<Cart> userCart = _cartList.GetCartItemsByUser(currentUser);
 
                 foreach (var cartItem in userCart)
                 {
@@ -344,10 +365,10 @@ namespace MovieStore.Controllers
 
         public IActionResult ReturnRental()
         {
-            User foundUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
-            if(foundUser != null)
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if(currentUser != null)
             {
-                IEnumerable<Rental> OutstandingUserRentals = _rentalList.GetOutstandingUserRentals(foundUser);
+                IEnumerable<Rental> OutstandingUserRentals = _rentalList.GetOutstandingUserRentals(currentUser);
                 foreach(var rental in OutstandingUserRentals)
                 {
                     var rentalDueDate = DateTime.Parse(rental.DueDate);
@@ -357,9 +378,65 @@ namespace MovieStore.Controllers
                         rental.DaysLate = (int)(DateTime.Today.Subtract(rentalDueDate).TotalDays);
                     }
                 }
+                _context.SaveChanges();
                 return View(OutstandingUserRentals);
             }else
                 return View("Login");
+        }
+
+        [HttpGet]
+        public IActionResult ReturnRentedMovie(int rentalId)
+        {
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            Rental toBeReturned = _rentalList.GetRentalById(rentalId);
+
+            if(currentUser != null && toBeReturned != null)
+            {
+                if (toBeReturned.IsLate && toBeReturned.DaysLate < 15)
+                {
+                    toBeReturned.rentalFinalCost = (decimal)(toBeReturned.DaysLate * 2.00);
+                    toBeReturned.RentalTransaction.Customer.AmountOwed += toBeReturned.rentalFinalCost;
+                }
+                else if (toBeReturned.IsLate && toBeReturned.DaysLate > 15)
+                {
+                    toBeReturned.rentalFinalCost = (decimal)(toBeReturned.RentalTransaction.TransactionMovie.PurchasePrice + (decimal)(15 * 2.00));
+                    toBeReturned.RentalTransaction.Customer.AmountOwed += toBeReturned.rentalFinalCost;
+                } else
+                {
+                    toBeReturned.Returned = true;
+                    _context.SaveChanges();
+                    ViewBag.Result = "Your return has been successfully processed";
+                    return RedirectToAction("ReturnRental");
+                }
+
+                ViewBag.RentalId = toBeReturned.RentalId;
+                toBeReturned.Returned = true;
+                toBeReturned.RentalTransaction.TransactionMovie.MovieInventory++;
+
+                _context.SaveChanges();
+                return View("FeePayment");
+
+            }
+            else
+            {
+                return View("Login");
+            }
+        }
+
+        public IActionResult FeePayment()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult FeePayment(TransactionDetails inputdetails, int rentalId)
+        {
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            currentUser.AmountPaid += _rentalList.GetRentalById(rentalId).rentalFinalCost;
+            currentUser.AmountOwed -= _rentalList.GetRentalById(rentalId).rentalFinalCost;
+            inputdetails.MainTransaction = _rentalList.GetRentalById(rentalId).RentalTransaction;
+            _context.SaveChanges();
+            return RedirectToAction("ReturnRental");
         }
 
         public IActionResult Privacy()
@@ -381,15 +458,15 @@ namespace MovieStore.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            User foundUser = _customerList.GetUserByUsername(username);
-            if (foundUser != null && foundUser.role != null)
+            User currentUser = _customerList.GetUserByUsername(username);
+            if (currentUser != null && currentUser.role != null)
             {
 
-                if (foundUser.UserUserName.Equals(username) && foundUser.role.Equals("admin"))
+                if (currentUser.UserUserName.Equals(username) && currentUser.role.Equals("admin"))
                 {
                     return RedirectToAction("AdminHomepage");
                 }
-                else if (foundUser.UserUserName.Equals(username) && foundUser.role != "admin")
+                else if (currentUser.UserUserName.Equals(username) && currentUser.role != "admin")
                 {
                     HttpContext.Session.SetString("Username", username);
                     return RedirectToAction("CustomerHomepage");
