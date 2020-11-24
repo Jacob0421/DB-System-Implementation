@@ -59,6 +59,11 @@ namespace MovieStore.Models
             return _context.Movies.FirstOrDefault(m => m.MovieNum == id);
         }
 
+        public Genre GetMovieGenre(Movie movieIn)
+        {
+            return movieIn.Genre;
+        }
+
         public IEnumerable<Movie> SearchMovies(string keyIn)
         {
             IEnumerable<Movie> searchResults = _context.Movies.Include(m => m.Director).Include(m => m.Genre).Where(o => o.MovieTitle.ToLower().Contains(keyIn.ToLower())

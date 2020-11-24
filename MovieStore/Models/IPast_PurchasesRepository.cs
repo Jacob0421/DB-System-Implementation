@@ -8,5 +8,6 @@ namespace MovieStore.Models
     public interface IPast_PurchasesRepository
     {
         Past_Purchases GetUserTransactions(Past_Purchases past_PurchaseIn);
+        IEnumerable<string> GetUserPastGenres(IEnumerable<Transaction> userTransactions);
     }
 }

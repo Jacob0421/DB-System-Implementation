@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace MovieStore.Models
 
         public IEnumerable<Transaction> GetUserTransactions(User userIn)
         {
-            return _context.Transactions.Where(t => t.Customer == userIn);
+            return _context.Transactions.Include(t => t.Customer).Include(t => t.TransactionMovie).Include(t => t.TransactionMovie.Genre).Where(t => t.Customer == userIn);
         }
     }
 }

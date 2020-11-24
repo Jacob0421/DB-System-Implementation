@@ -32,5 +32,10 @@ namespace MovieStore.Models
 
             return foundGenre;
         }
+
+        public string GetGenrebyObject(Genre genreIn)
+        {
+            return genreIn.GenreName;
+        }
     }
 }

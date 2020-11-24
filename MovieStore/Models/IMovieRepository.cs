@@ -13,5 +13,6 @@ namespace MovieStore.Models
         IEnumerable<Movie> GetAllMovies();
         Movie GetMovie(int id);
         IEnumerable<Movie> SearchMovies(string movieIn);
+        Genre GetMovieGenre(Movie movieIn);
     }
 }

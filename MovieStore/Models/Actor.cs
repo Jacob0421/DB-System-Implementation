@@ -10,6 +10,7 @@ namespace MovieStore.Models
     {
         [Key]
         public int ActorNum { get; set; }
+        public Movie ActorMovie { get; set; }
         public string ActorFName { get; set; }
         public string ActorLName { get; set; }
     }

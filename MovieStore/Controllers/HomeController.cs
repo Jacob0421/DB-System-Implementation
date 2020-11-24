@@ -77,7 +77,8 @@ namespace MovieStore.Controllers
 
                 ViewBag.UserBalance = currentUser.AmountOwed;
                 return View(userPastDueRentals);
-            } else
+            }
+            else
             {
                 return View("Login");
             }
@@ -550,6 +551,53 @@ namespace MovieStore.Controllers
             else
                 ViewBag.Result = "Invalid Username.";
             return View();
+        }
+
+        public IActionResult MovieSuggestions()
+        {
+            User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
+            if (currentUser != null)
+            {
+                IEnumerable<Transaction> userTransactions = _transactionList.GetUserTransactions(currentUser);
+
+                List<string> userGenres = new List<string>();
+
+                foreach (var transaction in userTransactions)
+                {
+                    userGenres.Add(_genreList.GetGenrebyObject(transaction.TransactionMovie.Genre));
+                }
+
+                List<string> distinctGenreNames = new List<string>();
+
+                distinctGenreNames.AddRange(userGenres.Distinct());
+
+                int[] genreCount = new int[distinctGenreNames.Count()];
+
+                foreach (var genre in distinctGenreNames)
+                {
+                    foreach (var userGenre in userGenres)
+                    {
+                        if(userGenre == genre)
+                            genreCount[distinctGenreNames.IndexOf(genre)]++;
+                    }                    
+                }
+
+                int topGenreCount = 0;
+                for (int i = 0; i < genreCount.Length; i++)
+                {
+                    if (topGenreCount < genreCount[i])
+                        topGenreCount = i;
+                }
+
+                string mostBoughtGenre = distinctGenreNames.ElementAt(topGenreCount);
+
+                IEnumerable<Movie> results= _movieList.SearchMovies(mostBoughtGenre);
+
+                return View(results);
+            } else
+            {
+                return View("Login");
+            }
         }
     }
 }

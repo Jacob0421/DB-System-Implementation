@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MovieStore.Models.Movie>
+
+@{
+    ViewData["Title"] = "MovieSuggestions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Movie Suggestions</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RentalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchasePrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieInventory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsNewRelease)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchasePrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieInventory)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsNewRelease)
+            </td>
+            <td></td>
+        </tr>
+}
+    </tbody>
+</table>

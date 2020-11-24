@@ -9,5 +9,6 @@ namespace MovieStore.Models
     {
         public Genre GetGenreByName(string nameIn);
         public Genre AddGenre(string GenreIn);
+        public string GetGenrebyObject(Genre genreIn);
     }
 }

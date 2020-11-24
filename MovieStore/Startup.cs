@@ -27,9 +27,11 @@ namespace MovieStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContextPool<AppDbContext>(options =>
-               options.UseSqlServer(_config.GetConnectionString("DBConnection")));
+            //services.AddDbContextPool<AppDbContext>(options =>
+            //   options.UseSqlServer(_config.GetConnectionString("DBConnection")));
 
+            services.AddDbContextPool<AppDbContext>(options =>
+                options.UseMySQL(_config.GetConnectionString("DBConnection")));
 
             services.AddScoped<IActorRepository, ActorRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

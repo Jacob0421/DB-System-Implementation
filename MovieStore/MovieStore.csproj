@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20201112160708_ChangedDBContext.Designer.cs" />
     <Compile Remove="Migrations\20201118201137_addedTransactionDetails.cs" />
     <Compile Remove="Migrations\20201118201137_addedTransactionDetails.Designer.cs" />
+    <Compile Remove="Migrations\20201124003237_AddedActorMovie.cs" />
+    <Compile Remove="Migrations\20201124003237_AddedActorMovie.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="MySql.Data" Version="8.0.22" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
+    <PackageReference Include="MySqlConnector" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
