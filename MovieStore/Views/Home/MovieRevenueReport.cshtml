@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "PurchaseRevenueReport";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="text-center">
+    <h1>Movie Revenue Report</h1>
+
+
+    <h4> Here is the revenue report generated for:  @ViewBag.MovieName</h4>
+
+    <h5>From @ViewBag.StartDate to @ViewBag.EndDate there was:</h5>
+</div>
+<br />
+
+<div class="text-center" style="display: flex; justify-content: space-evenly">
+    @if (ViewBag.TotalPurchases != 0)
+    {
+        <div>
+            <h4 class="text-center">Purchases</h4>
+            <p>@ViewBag.TotalPurchases purchases total, and @ViewBag.NewPurchases purchases of new titles.</p>
+        </div>
+    }
+    @if (ViewBag.TotalRentals != 0)
+    {
+        <div>
+            <h4 class="text-center">Rentals</h4>
+            <p>@ViewBag.TotalRentals rentals total, with @ViewBag.NewRentals rentals of new Titles</p>
+        </div>
+    }
+</div>

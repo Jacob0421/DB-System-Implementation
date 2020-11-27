@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,11 @@ namespace MovieStore.Models
 
             _context.Purchases.Add(newPurchase);
             return newPurchase;
+        }
+
+        public Purchase GetPurchaseByTransaction(Transaction transactionIn)
+        {
+            return _context.Purchases.Include(p => p.PurchaseTransaction).Include(p => p.PurchaseTransaction.TransactionMovie).Include(p => p.PurchaseTransaction.Customer).FirstOrDefault(p => p.PurchaseTransaction == transactionIn);
         }
     }
 }

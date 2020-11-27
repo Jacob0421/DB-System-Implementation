@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,10 @@ namespace MovieStore.Models
         public IEnumerable<Review> GetAllReviews()
         {
             return _context.Reviews;
+        }
+
+        public IEnumerable<Review> GetMovieReviews(Movie movieIn){
+            return _context.Reviews.Include(r => r.Movie).Where(r => r.Movie == movieIn);
         }
     }
 }

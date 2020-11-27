@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MovieStore.Models.Rental>
+
+@{
+    ViewData["Title"] = "RentalRevenueReport";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>RentalRevenueReport</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IsLate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Returned)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysLate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RentalFinalCost)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsLate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Returned)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DaysLate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalFinalCost)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RentalId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RentalId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RentalId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

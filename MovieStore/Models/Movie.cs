@@ -24,5 +24,6 @@ namespace MovieStore.Models
         public decimal PurchasePrice { get; set; }
         public int MovieInventory { get; set; }
         public bool IsNewRelease { get; set; }
+        public int NumberOfReviews { get; set; }
     }
 }

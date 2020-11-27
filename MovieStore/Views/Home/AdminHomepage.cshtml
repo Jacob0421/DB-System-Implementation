@@ -95,7 +95,7 @@
                         @Html.DisplayFor(modelItem => item.MovieInventory)
                     </td>
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.MovieNum">Remove From Stock</a>
+                        <a type="button" asp-action="Delete" asp-route-id="@item.MovieNum" class="btn btn-danger">Remove From Stock</a>
                     </td>
                 </tr>
             }

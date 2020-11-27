@@ -8,5 +8,6 @@ namespace MovieStore.Models
     public interface IPurchaseRepository
     {
         Purchase AddPurchase(Transaction transactionIn);
+        Purchase GetPurchaseByTransaction(Transaction transactionIn);
     }
 }

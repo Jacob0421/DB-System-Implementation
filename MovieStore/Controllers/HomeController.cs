@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using MovieStore.Migrations;
 using MovieStore.Models;
 
 namespace MovieStore.Controllers
@@ -110,6 +112,10 @@ namespace MovieStore.Controllers
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
             if (currentUser != null)
             {
+                if (TempData["Failure"] != null)
+                {
+                    ViewBag.Failure = TempData["Failure"];
+                }
                 return View();
             }
             else
@@ -125,7 +131,19 @@ namespace MovieStore.Controllers
             if (currentUser != null)
             {
                 ReviewIn.Author = currentUser;
+                ReviewIn.Movie = _movieList.GetMovieByName(ReviewIn.MovieTitle);
+                if (ReviewIn.Movie == null)
+                {
+                    TempData["Failure"] = "The name: " + ReviewIn.MovieTitle + "was not found, please re-enter";
+                    return RedirectToAction("AddReview");
+                }
                 _reviewList.Add(ReviewIn);
+                IEnumerable<Review> movieReviews = _reviewList.GetMovieReviews(ReviewIn.Movie);
+
+                ReviewIn.Movie.MovieRating = Math.Round((decimal)movieReviews.Average(m => m.StarRating));
+
+                ReviewIn.Movie.NumberOfReviews = movieReviews.Count();
+                _context.SaveChanges();
                 return RedirectToAction("ReviewList");
             }
             else
@@ -577,9 +595,9 @@ namespace MovieStore.Controllers
                 {
                     foreach (var userGenre in userGenres)
                     {
-                        if(userGenre == genre)
+                        if (userGenre == genre)
                             genreCount[distinctGenreNames.IndexOf(genre)]++;
-                    }                    
+                    }
                 }
 
                 int topGenreCount = 0;
@@ -591,12 +609,202 @@ namespace MovieStore.Controllers
 
                 string mostBoughtGenre = distinctGenreNames.ElementAt(topGenreCount);
 
-                IEnumerable<Movie> results= _movieList.SearchMovies(mostBoughtGenre);
+                string[] genres = mostBoughtGenre.Split('/');
 
-                return View(results);
-            } else
+                List<Movie> results = new List<Movie>();
+
+                for (int i = 0; i < genres.Length; i++)
+                {
+                    results.AddRange(_movieList.SearchMovies(genres[i]));
+                }
+
+                results.OrderBy(m => m.MovieTitle);
+
+                return View(results.AsEnumerable());
+            }
+            else
             {
                 return View("Login");
+            }
+        }
+
+        public IActionResult GenerateReports()
+        {
+
+            IEnumerable<SelectListItem> movies = _context.Movies.Select(m => new SelectListItem
+            {
+                Value = m.MovieNum.ToString(),
+                Text = m.MovieTitle
+            });
+
+            ViewBag.movieItems = movies;
+
+            IEnumerable<SelectListItem> genres = _context.Genre.Select(g => new SelectListItem
+            {
+                Value = g.GenreName,
+                Text = g.GenreName
+            });
+
+            ViewBag.movieItems = movies;
+            ViewBag.genreItems = genres;
+
+            if (TempData["Failure"] != null)
+                ViewBag.Failure = TempData["Failure"];
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult RevenueReport(string SearchType, string movieItems, string genreItems, string SearchRange, string StartDate, string TransactionType)
+        {
+
+
+            DateTime queryDate = DateTime.Parse(StartDate);
+            DateTime endDate = new DateTime();
+            switch (SearchRange)
+            {
+                case "Weekly":
+                    endDate = queryDate.AddDays(7);
+                    break;
+                case "Monthly":
+                    endDate = queryDate.AddMonths(1);
+                    break;
+                case "Yearly":
+                    endDate = queryDate.AddYears(1);
+                    break;
+            }
+
+            if (SearchType == "Genre")
+            {
+                Genre genreKey = _genreList.GetGenreByName(genreItems);
+                List<Transaction> TransactionsByGenre = _transactionList.GetTransactionsByGenre(genreKey).ToList();
+                Rental temp = new Rental();
+
+
+
+                decimal rentalSum = 0;
+                decimal purchaseSum = 0;
+                decimal totalRevenue = 0;
+                int returnedRentalCount = 0;
+                int purchasecount = 0;
+                int newRental = 0;
+                int newPurchase = 0;
+
+                foreach (var transaction in TransactionsByGenre)
+                {
+                    if (transaction.IsRental && DateTime.Parse(transaction.TransactionDate) > queryDate && DateTime.Parse(transaction.TransactionDate) < endDate)
+                    {
+                        temp = _rentalList.GetRentalByTransaction(transaction);
+                        if (temp.Returned && temp.IsLate)
+                        {
+                            rentalSum += temp.RentalFinalCost;
+                            returnedRentalCount++;
+                        }
+                        if(temp.Returned)
+                        {
+                            if (transaction.TransactionMovie.RentalPrice == (decimal)4.50)
+                                newRental++;
+                            rentalSum += transaction.TransactionMovie.RentalPrice;
+                            returnedRentalCount++;
+                        }
+                    }
+                    else
+                    {
+                        if (transaction.TransactionMovie.PurchasePrice == (decimal)30.00)
+                            newPurchase++;
+                        purchaseSum += transaction.TransactionMovie.PurchasePrice;
+                        purchasecount++;
+                    }
+                }
+                switch (TransactionType)
+                {
+                    case "All":
+                        totalRevenue = rentalSum + purchaseSum;
+                        break;
+                    case "Rentals":
+                        totalRevenue = rentalSum;
+                        ViewBag.NewRentals = newRental;
+                        ViewBag.ReturnedRentals = returnedRentalCount;
+                        break;
+                    case "Purchases":
+                        totalRevenue = purchaseSum;
+                        ViewBag.NewPurchases = newPurchase;
+                        ViewBag.PurchaseCount = purchasecount;
+                        break;
+                }
+                ViewBag.TotalRevenue = totalRevenue;
+                ViewBag.GenreName = genreItems;
+                ViewBag.StartDate = queryDate.ToLongDateString();
+                ViewBag.EndDate = endDate.ToLongDateString();
+
+                return View("GenreRevenueReport");
+            } else
+            {
+                Movie movieKey = _movieList.GetMovie(int.Parse(movieItems));
+                List<Transaction> TransactionsByMovie = _transactionList.GetRevenueReportByTitle(movieKey).ToList();
+                Rental temp = new Rental();
+
+                decimal totalRevenue = 0;
+                int totalPurchases = 0;
+                int newPurchases = 0;
+                int rentalsReturned = 0;
+                int newRentals = 0;
+                decimal rentalSum = 0;
+                decimal purchaseSum = 0;
+
+                foreach (var transaction in TransactionsByMovie)
+                {
+                    if (transaction.IsRental && DateTime.Parse(transaction.TransactionDate) > queryDate && DateTime.Parse(transaction.TransactionDate) < endDate)
+                    {
+                        temp = _rentalList.GetRentalByTransaction(transaction);
+                        if (temp.Returned && temp.IsLate)
+                        {
+                            rentalSum += temp.RentalFinalCost;
+                            rentalsReturned++;
+                        }
+                        if (temp.Returned)
+                        {
+                            if (transaction.TransactionMovie.RentalPrice == (decimal)4.50)
+                                newRentals++;
+                            rentalSum += transaction.TransactionMovie.RentalPrice;
+                            rentalsReturned++;
+                        }
+                    }
+                    else
+                    {
+                        if (transaction.TransactionMovie.PurchasePrice == (decimal)30.00)
+                            newPurchases++;
+                        purchaseSum += transaction.TransactionMovie.PurchasePrice;
+                        totalPurchases++;
+                    }
+
+                }
+
+                switch (TransactionType)
+                {
+                    case "Rentals":
+                        totalRevenue = rentalSum;
+                        ViewBag.TotalRentals = rentalsReturned;
+                        ViewBag.NewRentals = newRentals;
+                        break;
+                    case "Purchases":
+                        totalRevenue = purchaseSum;
+                        ViewBag.TotalPurchases = totalPurchases;
+                        ViewBag.NewPurchases = newPurchases;
+                        break;
+                    case "All":
+                        totalRevenue = purchaseSum + rentalSum;
+                        ViewBag.TotalPurchases = totalPurchases;
+                        ViewBag.NewPurchases = newPurchases;
+                        ViewBag.TotalRentals = rentalsReturned;
+                        ViewBag.NewRentals = newRentals;
+                        break;
+                }
+
+                ViewBag.MovieName = _movieList.GetMovie(int.Parse(movieItems)).MovieTitle;
+                ViewBag.TotalRevenue = totalRevenue;
+                ViewBag.StartDate = queryDate.ToLongDateString();
+                ViewBag.EndDate = endDate.ToLongDateString();
+                return View("MovieRevenueReport");
             }
         }
     }

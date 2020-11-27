@@ -1,0 +1,80 @@
+﻿<head>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+</head>
+<h1>Generate Reports</h1>
+@if (ViewBag.Failure != null)
+{
+    @:<div class="border-danger alert-danger text-danger text-center" style="border-radius: 25px;"><p>@ViewBag.Failure</p></div>
+}
+<form asp-action="RevenueReport" method="post">
+    <div id="Search">
+        <label for="TitleSearch">
+            Title
+            <input type="radio" name="SearchType" value="Title" id="TitleSearch" onclick="Title()" checked />
+        </label>
+        <label for="GenreSearch">
+            Genre
+            <input type="radio" name="SearchType" value="Genre" id="GenreSearch" onclick="Genre()" />
+        </label>
+        <br />
+
+        <div id="TitleDropdown" style="display: inline;">
+            @Html.DropDownList("movieItems", "--Select A Movie--")
+        </div>
+        <div id="GenreDropdown" style="display: none;">
+            @Html.DropDownList("genreItems", "--Select A Genre--")
+        </div>
+    </div>
+    <div id="Dates">
+        <label for="WeeklyFilter">
+            Weekly
+            <input type="radio" name="SearchRange" value="Weekly" id="WeeklyFilter" checked />
+        </label>
+        <label for="MonthlyFilter">
+            Monthly
+            <input type="radio" name="SearchRange" value="Monthly" id="MonthlyFilter"/>
+        </label>
+        <label for="YearlyFilter">
+            Yearly
+            <input type="radio" name="SearchRange" value="Yearly" id="YearlyFilter"/>
+        </label><br />
+
+        <label for="StartDate">
+            Start Date:
+            <input type="date" name="StartDate" id="StartDate" required/>
+        </label>
+    </div>
+    <div id="TransactionType">
+        <label for="All">
+            All
+            <input type="radio" name="TransactionType" value="All" id="All" checked />
+        </label>
+        <label for="RentalsOnly">
+            Rentals Only
+            <input type="radio" name="TransactionType" value="Rentals" id="RentalsOnly" />
+        </label>
+        <label for="PurchasesOnly">
+            Purchases Only
+            <input type="radio" name="TransactionType" value="Purchases" id="PurchasesOnly" />
+        </label><br />
+    </div>
+
+    <input type="submit" />
+</form>
+<script>
+    function Genre() {
+        document.getElementById("TitleDropdown").style.display = "none";
+        document.getElementById("GenreDropdown").style.display = "inline";
+        document.getElementById("GenreDropdown").required = true;
+        document.getElementById("TitleDropdown").required = false;
+    }
+
+    function Title() {
+        document.getElementById("GenreDropdown").style.display = "none";
+        document.getElementById("TitleDropdown").style.display = "inline";
+        document.getElementById("TitleDropdown").required = true;
+        document.getElementById("GenreDropdown").required = false;
+    }
+</script>

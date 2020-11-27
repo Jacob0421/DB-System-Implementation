@@ -1,0 +1,141 @@
+﻿@model IEnumerable<MovieStore.Models.Transaction>
+
+@{
+    ViewData["Title"] = "RevenueReport";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Revenue Report</h1>
+
+@if (ViewBag.Rentals == null)
+{
+    <h2>Purchases</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Date Purchased
+                </th>
+                <th>
+                    Purchase
+                </th>
+                <th>
+                    Amount
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @DateTime.Parse(item.TransactionDate).ToLongDateString()
+                    </td>
+                    <td>
+                        Purchase
+                    </td>
+                    <td>
+                        @item.TransactionMovie.PurchasePrice
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (ViewBag.Rental != null && Model != null)
+{
+    <div style="float: left;">
+        <table class="table" width="45%">
+            <thead>
+                <tr>
+                    <th>
+                        Date Purchased
+                    </th>
+                    <th>
+                        Purchase
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @DateTime.Parse(item.TransactionDate).ToLongDateString()
+                        </td>
+                        <td>
+                            Purchase
+                        </td>
+                        <td>
+                            @item.TransactionMovie.PurchasePrice
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+    <div style="float: right;">
+        <table width="45%">
+            <thead>
+                <tr>
+                    <th>
+                        Amount Paid
+                    </th>
+                    <th>
+                        Date rented
+                    </th>
+                </tr>
+                @foreach (var item in ViewBag.Rentals)
+                {
+                    <tr>
+                        <td>
+                            $@item.RentalFinalCost;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @DateTime.Parse(item.RentalTransaction.TransactionDate).ToLongDateString()
+                        </td>
+                    </tr>
+                }
+            </thead>
+        </table>
+
+    </div>
+}
+else
+{
+    <h2>Rentals</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Amount Paid
+                </th>
+                <th>
+                    Date rented
+                </th>
+            </tr>
+            @foreach (var item in ViewBag.Rentals)
+            {
+                <tr>
+                    <td>
+                        $@item.RentalFinalCost;
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @DateTime.Parse(item.RentalTransaction.TransactionDate).ToLongDateString()
+                    </td>
+                </tr>
+            }
+        </thead>
+    </table>
+}
+{
+
+}

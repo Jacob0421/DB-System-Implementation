@@ -50,13 +50,18 @@ namespace MovieStore.Models
 
         public IEnumerable<Movie> GetAllMovies()
         {
-            return _context.Movies.Include(m => m.Director).Include(m => m.Genre).Include(m => m.AgeRating).AsEnumerable();
+            return _context.Movies.Include(m => m.Director).Include(m => m.Genre).Include(m => m.AgeRating).AsEnumerable().OrderBy(m => m.MovieTitle);
 
         }
 
         public Movie GetMovie(int id)
         {
             return _context.Movies.FirstOrDefault(m => m.MovieNum == id);
+        }
+
+        public Movie GetMovieByName(string nameIn)
+        {
+            return _context.Movies.FirstOrDefault(m => m.MovieTitle == nameIn);
         }
 
         public Genre GetMovieGenre(Movie movieIn)

@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "GenreRevenueReport";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Genre Revenue Report</h1>
+
+<h4> Here is the revenue report generated for:  @ViewBag.GenreName</h4>
+
+<table>
+    <tr>
+        <th>From @ViewBag.StartDate to @ViewBag.EndDate there was:</th>
+    </tr>
+    <tr>
+        <td>
+            @ViewBag.PurchaseCount purchases total, and @ViewBag.NewPurchases purchases of new titles.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @ViewBag.ReturnedRentals rentals total, with @ViewBag.NewRentals rentals of new Titles
+        </td>
+    </tr>
+</table>

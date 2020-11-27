@@ -50,7 +50,8 @@
                     @Html.DisplayFor(modelItem => item.MovieTitle)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MovieRating) Stars
+                    @Html.DisplayFor(modelItem => item.MovieRating) Stars <br />
+                    (@Html.DisplayFor(modelItem => item.NumberOfReviews) reviews)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Director.FName) @Html.DisplayFor(modelItem => item.Director.LName)

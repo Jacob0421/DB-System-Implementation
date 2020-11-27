@@ -9,5 +9,6 @@ namespace MovieStore.Models
     {
         public Review Add(Review newReview);
         IEnumerable<Review> GetAllReviews();
+        IEnumerable<Review> GetMovieReviews(Movie movieIn);
     }
 }

@@ -38,6 +38,11 @@ namespace MovieStore.Models
             return newRental;
         }
 
+        public IEnumerable<Rental> GetAllOutstandingRentals()
+        {
+            return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie).Where(r => !r.Returned);
+        }
+
         public IEnumerable<Rental> GetOutstandingUserRentals(User userIn)
         {
             return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie). Where(r => r.RentalTransaction.Customer == userIn && r.Returned == false);
@@ -46,6 +51,11 @@ namespace MovieStore.Models
         public Rental GetRentalById(int rentalIdIn)
         {
             return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.Customer).Include(r => r.RentalTransaction.TransactionMovie).FirstOrDefault(r => r.RentalId == rentalIdIn);
+        }
+
+        public Rental GetRentalByTransaction(Transaction transactionIn)
+        {
+            return _context.Rentals.Include(r => r.RentalTransaction).Include(r => r.RentalTransaction.TransactionMovie).FirstOrDefault(r => r.RentalTransaction == transactionIn);
         }
     }
 }
