@@ -430,7 +430,7 @@ namespace MovieStore.Controllers
                 {
                     _cartList.RemoveFromCart(cartItem);
                 }
-                currentUser.AmountPaid = currentUser.UserCartTotal;
+                currentUser.AmountPaid += currentUser.UserCartTotal;
                 currentUser.UserCartTotal = 0;
                 _context.SaveChanges();
 
@@ -718,19 +718,28 @@ namespace MovieStore.Controllers
                 switch (TransactionType)
                 {
                     case "All":
-                        totalRevenue = rentalSum + purchaseSum;
+                        totalRevenue = purchaseSum + rentalSum;
+                        ViewBag.TotalPurchases = purchasecount;
+                        ViewBag.NewPurchases = newPurchase;
+                        ViewBag.TotalRentals = returnedRentalCount;
+                        ViewBag.NewRentals = newRental;
+                        ViewBag.RentalSum = rentalSum;
+                        ViewBag.Purchasesum = purchaseSum;
                         break;
                     case "Rentals":
                         totalRevenue = rentalSum;
                         ViewBag.NewRentals = newRental;
                         ViewBag.ReturnedRentals = returnedRentalCount;
+                        ViewBag.RentalSum = rentalSum;
                         break;
                     case "Purchases":
                         totalRevenue = purchaseSum;
                         ViewBag.NewPurchases = newPurchase;
-                        ViewBag.PurchaseCount = purchasecount;
+                        ViewBag.TotalPurchases = purchasecount;
+                        ViewBag.Purchasesum = purchaseSum;
                         break;
                 }
+                ViewBag.TransactionType = TransactionType;
                 ViewBag.TotalRevenue = totalRevenue;
                 ViewBag.GenreName = genreItems;
                 ViewBag.StartDate = queryDate.ToLongDateString();
@@ -785,11 +794,13 @@ namespace MovieStore.Controllers
                         totalRevenue = rentalSum;
                         ViewBag.TotalRentals = rentalsReturned;
                         ViewBag.NewRentals = newRentals;
+                        ViewBag.RentalSum = rentalSum;
                         break;
                     case "Purchases":
                         totalRevenue = purchaseSum;
                         ViewBag.TotalPurchases = totalPurchases;
                         ViewBag.NewPurchases = newPurchases;
+                        ViewBag.Purchasesum = purchaseSum;
                         break;
                     case "All":
                         totalRevenue = purchaseSum + rentalSum;
@@ -797,9 +808,11 @@ namespace MovieStore.Controllers
                         ViewBag.NewPurchases = newPurchases;
                         ViewBag.TotalRentals = rentalsReturned;
                         ViewBag.NewRentals = newRentals;
+                        ViewBag.RentalSum = rentalSum;
+                        ViewBag.Purchasesum = purchaseSum;
                         break;
                 }
-
+                ViewBag.TransactionType = TransactionType;
                 ViewBag.MovieName = _movieList.GetMovie(int.Parse(movieItems)).MovieTitle;
                 ViewBag.TotalRevenue = totalRevenue;
                 ViewBag.StartDate = queryDate.ToLongDateString();

@@ -1,0 +1,8 @@
+﻿li.nav-item:hover {
+    background-color: black;
+    border-radius: 10px;
+    transition: 1s ease;
+}
+a.nav-link.text-dark:hover {
+    color: floralwhite !important;
+}
