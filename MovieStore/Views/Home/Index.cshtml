@@ -1,5 +1,4 @@
-﻿@model IEnumerable<MovieStore.Models.Movie>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 <head>
@@ -11,66 +10,13 @@
         <h1>Welcome to UNFMovies!</h1>
         <p>What would you like to do?</p>
     </div>
-    <div class="flex-grow-0 LinkContainer">
+    <div class="flex-grow-0 LinkContainer" >
         <h3><a href="~/Home/Login">User Login</a></h3>
         <p>Here you can login to the UNFMovie Database.</p>
     </div>
-    <div class="flex-grow-0 LinkContainer">
+    <div class="flex-grow-0 LinkContainer" >
         <h3><a href="~/Home/AddCustomer">Create Profile</a></h3>
         <p>Don't have a profile? Here you can create your user profile within the UNFMovie Database.</p>
-    </div>
-    <div class="highest-rated">
-        <h2 class="text-center">
-            Our Highest Rated Movies In Stock:
-        </h2>
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4 text-center">
-                    <div class="card shadow bg-light rounded">
-                        <h5 class="card-header">
-                            @item.MovieTitle
-                        </h5>
-                        <div class="card-body">
-                            <h6 class="mb-2 card-subtitle text-muted">
-                                @item.Director.FName @item.Director.LName
-                            </h6>
-                            <p class="card-text">
-                                Rating: @item.MovieRating <br />
-                                <span class="text-muted">(@item.NumberOfReviews Reviews)</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-    <div class="new-additions">
-        <h2 class="text-center">
-            Here's a Couple of Our Newest Releases!
-        </h2>
-        <div class="row">
-            @foreach (var item in ViewBag.NewAdditions)
-            {
-                <div class="col-md-4 text-center">
-                    <div class="card shadow bg-light rounded">
-                        <h5 class="card-header">
-                            @item.MovieTitle
-                        </h5>
-                        <div class="card-body">
-                            <h6 class="mb-2 card-subtitle text-muted">
-                                Directed By: <br />
-                                @item.Director.FName @item.Director.LName
-                            </h6>
-                            <p class="card-text">
-                                Rating: @item.MovieRating <br />
-                                <span class="text-muted">(@item.NumberOfReviews Reviews)</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
     </div>
 </div>
 

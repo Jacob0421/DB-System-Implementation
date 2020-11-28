@@ -32,9 +32,8 @@
     padding-top: 5%;
     width: 60%;
     margin: auto;
-    background-color: rgba(209, 209, 209, 0.95);
+    background-color: rgba(209, 209, 209, 0.9);
     border-radius: 15px;
-    box-shadow: rgba(209, 209, 209, 0.95) 0 0 15px 15px;
 }
 
 .LinkContainer {
@@ -51,24 +50,4 @@ a:hover {
     color: floralwhite;
     text-decoration:underline;
     transition: .5s ease;
-}
-
-.highest-rated .new-additions {
-    display:flex;
-    justify-content: center;
-}
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.row > div[class*='col-'] {
-    display:flex;
-    justify-content: space-evenly;
-
-}
-
-.card {
-    width: 16rem;
 }

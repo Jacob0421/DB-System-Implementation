@@ -67,9 +67,7 @@ namespace MovieStore.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Movie> topThreeMovies = _movieList.GetAllMovies().OrderByDescending(m => m.MovieRating).Take(3);
-            ViewBag.NewAdditions = _movieList.GetAllMovies().Where(m => m.IsNewRelease).Take(3).ToList();
-            return View(topThreeMovies);
+            return View();
         }
 
         public IActionResult CheckBalance()
