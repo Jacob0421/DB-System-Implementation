@@ -23,7 +23,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="MovieTitle" class="control-label"></label>
-                <input asp-for="MovieTitle" class="form-control" />
+                <div id="TitleDropdown" style="display: inline;">
+                    @Html.DropDownList("movieItems", "--Select A Movie--")
+                </div>
                 <span asp-validation-for="MovieTitle" class="text-danger"></span>
             </div>
             <div class="form-group">

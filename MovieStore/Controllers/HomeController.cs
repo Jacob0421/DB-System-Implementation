@@ -118,6 +118,15 @@ namespace MovieStore.Controllers
                 {
                     ViewBag.Failure = TempData["Failure"];
                 }
+
+                IEnumerable<SelectListItem> movies = _context.Movies.Select(m => new SelectListItem
+                {
+                    Value = m.MovieNum.ToString(),
+                    Text = m.MovieTitle
+                });
+
+                ViewBag.movieItems = movies;
+
                 return View();
             }
             else
@@ -127,13 +136,14 @@ namespace MovieStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddReview(Review ReviewIn)
+        public IActionResult AddReview(Review ReviewIn, string movieItems)
         {
             User currentUser = _customerList.GetUserByUsername(HttpContext.Session.GetString("Username"));
             if (currentUser != null)
             {
                 ReviewIn.Author = currentUser;
-                ReviewIn.Movie = _movieList.GetMovieByName(ReviewIn.MovieTitle);
+                ReviewIn.Movie = _movieList.GetMovie(int.Parse(movieItems));
+                ReviewIn.MovieTitle = ReviewIn.Movie.MovieTitle;
                 if (ReviewIn.Movie == null)
                 {
                     TempData["Failure"] = "The name: " + ReviewIn.MovieTitle + "was not found, please re-enter";

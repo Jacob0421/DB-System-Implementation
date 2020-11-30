@@ -7,6 +7,10 @@
 
 <h1>Rental Return</h1>
 
+@if (!Model.Any())
+{
+    @:<div class="border-success alert-success text-success text-center" style="border-radius: 25px;">You currently do not have any outstanding rentals. Please feel free to check out our movies <a href="/Home/CustomerHomepage">HERE</a></div>
+}
 
 <table class="table text-center">
     <thead>
@@ -30,34 +34,35 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @if (item.IsLate)
-                {
-                    @:<p class="text-danger">@DateTime.Parse(item.DueDate).ToLongDateString()</p>
-                }
-                else
-                {
-                    @:<p>@DateTime.Parse(item.DueDate).ToLongDateString()</p>
-                }
-            </td>
-            <td>
-                @item.RentalTransaction.TransactionMovie.MovieTitle
-            </td>
-            <td>
-                @DateTime.Parse(item.RentalTransaction.TransactionDate).ToLongDateString()
-            </td>
-            <td>
-                <p class="text-danger">Not Returned</p>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DaysLate)
-            </td>
-            <td>
-                <a type="button" asp-action="ReturnRentedMovie" asp-route-rentalId="@item.RentalId" class="btn btn-primary" m>Return</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.IsLate)
+                    {
+                        @:<p class="text-danger">@DateTime.Parse(item.DueDate).ToLongDateString()</p>
+                    }
+                    else
+                    {
+                        @:<p>@DateTime.Parse(item.DueDate).ToLongDateString()</p>
+                    }
+                </td>
+                <td>
+                    @item.RentalTransaction.TransactionMovie.MovieTitle
+                </td>
+                <td>
+                    @DateTime.Parse(item.RentalTransaction.TransactionDate).ToLongDateString()
+                </td>
+                <td>
+                    <p class="text-danger">Not Returned</p>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DaysLate)
+                </td>
+                <td>
+                    <a type="button" asp-action="ReturnRentedMovie" asp-route-rentalId="@item.RentalId" class="btn btn-primary" m>Return</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

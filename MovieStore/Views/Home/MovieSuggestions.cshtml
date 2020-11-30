@@ -14,7 +14,7 @@
                 @Html.DisplayNameFor(model => model.MovieTitle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MovieRating)
+                Movie Ratings
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MovieReleaseDate)
@@ -24,9 +24,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PurchasePrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieInventory)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsNewRelease)
@@ -41,7 +38,8 @@
                 @Html.DisplayFor(modelItem => item.MovieTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MovieRating)
+                @Html.DisplayFor(modelItem => item.MovieRating) Stars <br />
+                (@Html.DisplayFor(modelItem => item.NumberOfReviews) reviews)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MovieReleaseDate)
@@ -51,9 +49,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PurchasePrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieInventory)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsNewRelease)
