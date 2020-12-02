@@ -106,7 +106,7 @@ namespace MovieStore.Controllers
 
         public IActionResult ReviewList()
         {
-            return View(_reviewList.GetAllReviews().AsEnumerable());
+            return View(_reviewList.GetAllReviews().AsEnumerable().OrderByDescending(r => r.ReviewDate));
         }
 
         public IActionResult AddReview()
