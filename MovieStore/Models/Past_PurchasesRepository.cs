@@ -31,5 +31,10 @@ namespace MovieStore.Models
 
             return past_PurchaseIn;
         }
+        public void GetUserMovies(Past_Purchases Movie)
+        {
+            Console.WriteLine("Movie: {0}", Movie);
+
+        }
     }
 }
